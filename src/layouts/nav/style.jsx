@@ -40,6 +40,8 @@ export const MenuItem = styled(Link)`
   font-size: 16px;
   font-weight: bold;
   color: #333;
+  display: flex;
+  align-items: center;
 
   &:hover {
     color: #007aff;
