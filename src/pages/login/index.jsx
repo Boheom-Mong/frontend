@@ -1,7 +1,7 @@
-import * as S from "./style";
+import Login from "./login";
 
 const index = () => {
-  return <S.Wrapper>로그인 화면</S.Wrapper>;
+  return <Login />;
 };
 
 export default index;

@@ -1,5 +1,5 @@
 import GlobalStyle from "./style/globalStyle";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Nav from "./layouts/nav/nav";
 import Footer from "./layouts/footer/footer";
@@ -23,17 +23,22 @@ const Wrapper = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding: 0 var(--dpadding);
+  padding: ${(props) => (props.$hidepage ? "0 0" : "0 var(--dpadding)")};
 `;
 
 const Layout = () => {
+  const location = useLocation();
+
+  // 특정 경로에서는 Nav와 Footer를 숨기고 싶을 때
+  const hidepage = ["/login", "/signup"].includes(location.pathname);
+
   return (
     <BackGroundColor>
-      <Wrapper>
-        <Nav />
+      <Wrapper $hidepage={hidepage}>
+        {!hidepage && <Nav />}
         <Outlet />
       </Wrapper>
-      <Footer />
+      {!hidepage && <Footer />}
     </BackGroundColor>
   );
 };
