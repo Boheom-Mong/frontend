@@ -28,10 +28,10 @@ const router = createBrowserRouter([
       { path: "/login/oauth2/code/kakao", element: <OAuth2RedirectHandler /> },
 
       // 마이 페이지
-      { path: "/mypage", element: <Mypage /> },
+      { path: "/mypage/*", element: <Mypage /> },
 
       // 보험 상세 페이지
-      { path: "/product/:productId", element: <ProductDetail /> },
+      { path: "/product/:id", element: <ProductDetail /> },
 
       // 보험 가입 페이지
       { path: "/product/enrollment", element: <ProductEnrollment /> },

@@ -1,7 +1,7 @@
-import * as S from "./style";
+import Home from "./home";
 
 const index = () => {
-  return <S.Wrapper>홈 화면</S.Wrapper>;
+  return <Home />;
 };
 
 export default index;

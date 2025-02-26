@@ -1,7 +1,7 @@
-import * as S from "./style";
+import MyPage from "./mypage";
 
 const index = () => {
-  return <S.Wrapper>마이페이지 화면</S.Wrapper>;
+  return <MyPage />;
 };
 
 export default index;

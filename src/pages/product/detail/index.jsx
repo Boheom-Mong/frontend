@@ -1,7 +1,7 @@
-import * as S from "./style";
+import ProductDetail from "./productDetail";
 
 const index = () => {
-  return <S.Wrapper>보험 상세 화면</S.Wrapper>;
+  return <ProductDetail />;
 };
 
 export default index;
