@@ -1,48 +1,72 @@
 import styled from "styled-components";
 
-export const FooterWrapper = styled.div`
+export const FooterWrapper = styled.footer`
+  width: 100%;
+  background-color: rgb(239, 239, 239);
+  padding: 2rem 1rem;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
+`;
+
+export const ContentContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  width: 100%;
-  padding: 20px 250px;
-  background-color: rgb(239, 239, 239);
-  text-align: left;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+`;
+
+export const LeftContent = styled.div`
+  margin-bottom: 1.5rem;
+
+  @media (min-width: 768px) {
+    margin-bottom: 0;
+  }
 `;
 
 export const Text = styled.h1`
-  font-size: 20px;
+  font-size: 1.25rem;
   color: #3e61d7;
-  margin: 20px 0px;
+  margin-bottom: 1rem;
   font-weight: bold;
 `;
 
 export const TeamText = styled.p`
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #777777;
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
 `;
 
 export const CopyrightText = styled.p`
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #777777;
 `;
 
-// 오른쪽 링크 컨테이너
 export const LinksContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  gap: 50px;
-  width: 100%;
-  font-size: 12px;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 2rem;
+    align-items: center;
+  }
 `;
 
-// 개별 링크 항목 스타일
 export const LinkItem = styled.span`
   color: #2f2f2f;
   cursor: pointer;
   text-decoration: none;
+  font-size: 0.75rem;
 
   &:hover {
     text-decoration: underline;
