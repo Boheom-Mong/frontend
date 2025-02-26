@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import * as S from "./style";
 import { useAuthStore } from "../../store/useAuthStore";
-import { useEffect } from "react";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, Bell } from "lucide-react";
 
 const Nav = () => {
   const { isLoggedIn, user, fetchUserInfo, storeLogout } = useAuthStore();
@@ -48,17 +47,22 @@ const Nav = () => {
       <S.AuthWrapper isOpen={isMenuOpen}>
         {isLoggedIn ? (
           <>
-            <S.MenuItem as="button" onClick={handleLogout}>
-              로그아웃
-            </S.MenuItem>
             {user && (
               <>
+                {/* 알림 아이콘 */}
+                <S.NotificationIcon>
+                  <Bell size={18} />
+                </S.NotificationIcon>
+
                 <S.UserInfo>
                   <User size={18} />
                   <span>{user.name}님</span>
                 </S.UserInfo>
                 <S.MenuItem to="/mypage" onClick={() => setIsMenuOpen(false)}>
                   마이페이지
+                </S.MenuItem>
+                <S.MenuItem as="button" onClick={handleLogout}>
+                  로그아웃
                 </S.MenuItem>
               </>
             )}

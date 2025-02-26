@@ -103,3 +103,20 @@ export const MenuToggle = styled.button`
     display: block;
   }
 `;
+
+export const NotificationIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-right: 0.5rem;
+
+  svg {
+    color: #333;
+    transition: color 0.2s;
+  }
+
+  &:hover svg {
+    color: #007aff;
+  }
+`;
