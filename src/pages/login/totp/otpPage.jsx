@@ -1,19 +1,32 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as S from "./style";
+import API from "../../../store";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 const OtpPage = () => {
   const [otpCode, setOtpCode] = useState("");
+  const navigate = useNavigate();
+  const { storeLogin } = useAuthStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 실제론 /api/totp/verify 등으로 otpCode 보내 검증
-    // axios.post("/api/totp/verify", { otpCode })
-    //   .then(res => { // 토큰발급
-    //     // res.data.accessToken, etc
-    //   })
-    //   .catch(err => {
-    //     alert("OTP 코드가 잘못되었습니다!");
-    //   });
+    try {
+      // /api/totp/verify 에 POST
+      const res = await API.post("/otp/verify", { otpCode });
+      // 응답 { accessToken }
+      const { accessToken } = res.data;
+
+      // 토큰 저장 (예: localStorage)
+      localStorage.setItem("access_token", accessToken);
+
+      storeLogin(accessToken, null);
+
+      // 홈으로 이동
+      navigate("/");
+    } catch (err) {
+      alert("OTP 인증 실패: " + err.message);
+    }
   };
 
   return (
@@ -26,19 +39,17 @@ const OtpPage = () => {
       <S.Card>
         <S.CardTitle>2차 인증</S.CardTitle>
         <S.CardSubtitle>
-          Google Authenticator에서 표시되는
-          <br /> 6자리 코드를 입력해주세요.
+          Google Authenticator 앱에서 표시되는 <br /> 6자리 코드를 입력해주세요.
         </S.CardSubtitle>
 
-        <S.Form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <S.OtpInput
-            placeholder="6자리 코드"
+            placeholder="6자리 OTP"
             value={otpCode}
             onChange={(e) => setOtpCode(e.target.value)}
-            maxLength={6}
           />
           <S.OtpButton type="submit">인증하기</S.OtpButton>
-        </S.Form>
+        </form>
       </S.Card>
     </S.Container>
   );

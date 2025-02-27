@@ -3,7 +3,7 @@ import App from "./App";
 import Home from "./pages/home/index";
 import Login from "./pages/login/kakao/index";
 import Qr from "./pages/login/totp/qr";
-import Totp from "./pages/login/totp/otpNum";
+import Totp from "./pages/login/totp/otpPage";
 import Signup from "./pages/signup/index";
 import Mypage from "./pages/mypage/index";
 import ProductDetail from "./pages/product/detail/index";
@@ -27,10 +27,10 @@ const router = createBrowserRouter([
       { path: "/signup", element: <Signup /> },
 
       // 2차인증 qr 페이지
-      { path: "/qr", element: <Qr /> },
+      { path: "/otp/qr", element: <Qr /> },
 
       // 2차인증 otp 번호 입력 페이지
-      { path: "/totp", element: <Totp /> },
+      { path: "/otp", element: <Totp /> },
 
       // 카카오 OAuth 리다이렉트 핸들러 (보호 필요 없음)
       { path: "/login/oauth2/code/kakao", element: <OAuth2RedirectHandler /> },
