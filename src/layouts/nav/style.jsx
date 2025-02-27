@@ -6,10 +6,13 @@ export const NavContainer = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 2rem;
+  padding: 0.75rem 10rem;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
+  @media (max-width: 950px) {
+    padding: 2rem;
+  }
 `;
 
 export const LeftWrapper = styled.div`
@@ -31,17 +34,7 @@ export const MenuWrapper = styled.div`
   display: flex;
   gap: 1.5rem;
 
-  @media (max-width: 768px) {
-    display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: #ffffff;
-    padding: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
+  /* 토글 없이 항상 보이므로 미디어쿼리로 숨길 필요도 없음 */
 `;
 
 export const MenuItem = styled(Link)`
@@ -72,12 +65,7 @@ export const AuthWrapper = styled.div`
   gap: 1rem;
   align-items: center;
 
-  @media (max-width: 768px) {
-    display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  }
+  /* 마찬가지로 항상 보이도록 처리 */
 `;
 
 export const UserInfo = styled.div`
@@ -86,22 +74,6 @@ export const UserInfo = styled.div`
   gap: 0.5rem;
   font-size: 0.9rem;
   color: #333;
-
-  @media (max-width: 768px) {
-    margin-top: 0.5rem;
-  }
-`;
-
-export const MenuToggle = styled.button`
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #333;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
 `;
 
 export const NotificationIcon = styled.div`

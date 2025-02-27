@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const FooterWrapper = styled.footer`
   width: 100%;
   background-color: rgb(239, 239, 239);
-  padding: 2rem 1rem;
+  padding: 2rem 10rem;
 
   @media (min-width: 768px) {
     padding: 2rem;
