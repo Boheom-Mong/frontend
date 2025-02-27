@@ -34,8 +34,8 @@ const Layout = () => {
 
   return (
     <BackGroundColor>
+      {!hidepage && <Nav />}
       <Wrapper $hidepage={hidepage}>
-        {!hidepage && <Nav />}
         <Outlet />
       </Wrapper>
       {!hidepage && <Footer />}

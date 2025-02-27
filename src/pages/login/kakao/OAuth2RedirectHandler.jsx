@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useAuthStore } from "../../../store/useAuthStore";
 import * as S from "./style";
 
 function OAuth2RedirectHandler() {
