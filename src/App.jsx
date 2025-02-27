@@ -30,7 +30,9 @@ const Layout = () => {
   const location = useLocation();
 
   // 특정 경로에서는 Nav와 Footer를 숨기고 싶을 때
-  const hidepage = ["/login", "/signup"].includes(location.pathname);
+  const hidepage = ["/login", "/signup", "/qr", "/totp"].includes(
+    location.pathname
+  );
 
   return (
     <BackGroundColor>
