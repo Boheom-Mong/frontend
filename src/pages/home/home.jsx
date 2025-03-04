@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import * as S from "./style";
 import ProductCard from "../../components/ProductCard/ProductCard";
+import useInsuranceProductStore from "../../store/useInsuranceProductStore";
 
+// zustand store 불러오기
+
+// 기존에 작성된 상수 목록 (회사, 카테고리)
 const insuranceCategories = [
   "실손의료보험",
   "암보험",
@@ -18,7 +22,6 @@ const insuranceCategories = [
   "단체보험",
   "건강보험",
 ];
-
 const insuranceCompanies = [
   "삼성생명",
   "한화생명",
@@ -27,78 +30,36 @@ const insuranceCompanies = [
   "DB손해보험",
 ];
 
-const dummyInsurances = [
-  {
-    id: 1,
-    company: "삼성생명",
-    name: "스마트보장스페셜종신보험",
-    category: "종신보험",
-    description: "든든한 보장과 함께 스마트한 혜택을 제공하는 종신보험입니다.",
-    monthlyFee: "89,000원",
-    coverage: "사망보험금 1억원, 재해사망보험금 2억원",
-  },
-  {
-    id: 2,
-    company: "한화생명",
-    name: "건강백세종신보험",
-    category: "종신보험",
-    description: "평생 든든한 보장으로 건강한 삶을 지켜드립니다.",
-    monthlyFee: "76,000원",
-    coverage: "사망보험금 1억원, 암진단금 3천만원",
-  },
-  {
-    id: 3,
-    company: "한화생명",
-    name: "건강백세종신보험",
-    category: "종신보험",
-    description: "평생 든든한 보장으로 건강한 삶을 지켜드립니다.",
-    monthlyFee: "76,000원",
-    coverage: "사망보험금 1억원, 암진단금 3천만원",
-  },
-  {
-    id: 4,
-    company: "한화생명",
-    name: "건강백세종신보험",
-    category: "종신보험",
-    description: "평생 든든한 보장으로 건강한 삶을 지켜드립니다.",
-    monthlyFee: "76,000원",
-    coverage: "사망보험금 1억원, 암진단금 3천만원",
-  },
-  // ... (추가 데이터)
-];
-
 const Home = () => {
-  const [selectedCompanies, setSelectedCompanies] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [filteredInsurances, setFilteredInsurances] = useState(dummyInsurances);
+  // zustand에서 상태와 함수를 가져옵니다.
+  const {
+    insuranceProducts,
+    selectedCompanies,
+    selectedCategories,
+    toggleCompany,
+    toggleCategory,
+    fetchInsuranceProducts,
+    searchInsuranceProducts,
+    loading,
+    error,
+  } = useInsuranceProductStore();
+
+  // 컴포넌트가 처음 렌더링될 때 전체 보험상품 불러오기 (원하는 시점에 호출)
+  useEffect(() => {
+    fetchInsuranceProducts();
+  }, [fetchInsuranceProducts]);
+
+  // '검색' 버튼 클릭 -> store의 searchInsuranceProducts 호출
+  const handleSearch = () => {
+    searchInsuranceProducts();
+  };
 
   const handleCompanyChange = (company) => {
-    setSelectedCompanies((prev) =>
-      prev.includes(company)
-        ? prev.filter((c) => c !== company)
-        : [...prev, company]
-    );
+    toggleCompany(company);
   };
 
   const handleCategoryChange = (category) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
-    );
-  };
-
-  const handleSearch = () => {
-    const filtered = dummyInsurances.filter((insurance) => {
-      const companyMatch =
-        selectedCompanies.length === 0 ||
-        selectedCompanies.includes(insurance.company);
-      const categoryMatch =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(insurance.category);
-      return companyMatch && categoryMatch;
-    });
-    setFilteredInsurances(filtered);
+    toggleCategory(category);
   };
 
   return (
@@ -145,9 +106,13 @@ const Home = () => {
         <S.SearchButton onClick={handleSearch}>검색</S.SearchButton>
       </S.FilterSection>
 
+      {/* 로딩/에러 상태 표시 */}
+      {loading && <div>불러오는 중...</div>}
+      {error && <div>에러 발생: {error}</div>}
+
       <S.InsuranceList>
-        {filteredInsurances.map((insurance) => (
-          <ProductCard key={insurance.id} insurance={insurance} />
+        {insuranceProducts.map((insurance) => (
+          <ProductCard key={insurance.productId} insurance={insurance} />
         ))}
       </S.InsuranceList>
     </S.Wrapper>
