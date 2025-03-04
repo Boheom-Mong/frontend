@@ -1,7 +1,9 @@
 import { useState } from "react";
 import * as S from "./style";
+import API from "../../store";
 
-const chronicDiseases = [
+// 만성질환 목록 예시
+const chronicDiseasesList = [
   "고혈압",
   "당뇨",
   "고지혈증",
@@ -14,51 +16,77 @@ const chronicDiseases = [
   "심부전",
 ];
 
+// 직업 한글 목록
 const jobTypes = ["사무직", "배달", "건설", "자영업", "학생", "주부", "무직"];
 
-const HealthInfo = () => {
+// 한글 → 백엔드 enum 상수
+const jobTypeMap = {
+  사무직: "OFFICE",
+  배달: "DELIVERY",
+  건설: "CONSTRUCTION",
+  자영업: "SELF_EMPLOYED",
+  학생: "STUDENT",
+  주부: "HOUSEWIFE",
+  무직: "UNEMPLOYED",
+};
+
+const MypageHealthInfo = () => {
   const [healthInfo, setHealthInfo] = useState({
+    // 기본 정보
     age: "",
     gender: "",
     height: "",
     weight: "",
+    // 건강 상태
     bloodPressureLevel: "",
     bloodSugarLevel: "",
     surgeryCount: "0",
     isSmoking: false,
     isDrinking: false,
+    // 만성질환
     chronicDiseases: [],
+    // 직업
     jobType: "",
+    // 생활 정보
     hasChildren: false,
     hasOwnHouse: false,
     hasPet: false,
     hasFamilyHistory: false,
   });
 
+  // BMI 계산
   const calculateBMI = () => {
-    if (!healthInfo.height || !healthInfo.weight) return null;
-    const heightInMeters = healthInfo.height / 100;
-    return (healthInfo.weight / (heightInMeters * heightInMeters)).toFixed(1);
+    const h = Number(healthInfo.height);
+    const w = Number(healthInfo.weight);
+    if (!h || !w) return null;
+    const meters = h / 100;
+    const rawBmi = w / (meters * meters);
+    // 소수점 1자리 유지
+    return Number(rawBmi.toFixed(1));
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
+    // 체크박스 분기
     if (type === "checkbox") {
       if (name === "chronicDiseases") {
+        // 만성질환: 다중 체크
         setHealthInfo((prev) => ({
           ...prev,
           chronicDiseases: checked
             ? [...prev.chronicDiseases, value]
-            : prev.chronicDiseases.filter((disease) => disease !== value),
+            : prev.chronicDiseases.filter((d) => d !== value),
         }));
       } else {
+        // 단일 체크 (흡연, 음주 등)
         setHealthInfo((prev) => ({
           ...prev,
           [name]: checked,
         }));
       }
     } else {
+      // 라디오나 텍스트/셀렉트
       setHealthInfo((prev) => ({
         ...prev,
         [name]: value,
@@ -66,8 +94,58 @@ const HealthInfo = () => {
     }
   };
 
+  // 예시: 서버에 PUT으로 수정 요청
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // 직업: 한글 → Enum 상수
+      const convertedJobType = jobTypeMap[healthInfo.jobType] || "UNEMPLOYED";
+
+      // 숫자 변환(빈 문자열이면 null)
+      const bpValue =
+        healthInfo.bloodPressureLevel === ""
+          ? null
+          : Number(healthInfo.bloodPressureLevel);
+      const bsValue =
+        healthInfo.bloodSugarLevel === ""
+          ? null
+          : Number(healthInfo.bloodSugarLevel);
+      const surgeryCountNum = Number(healthInfo.surgeryCount);
+
+      // BMI
+      const bmiVal = calculateBMI(); // number or null
+
+      const payload = {
+        age: Number(healthInfo.age),
+        gender: healthInfo.gender,
+        height: Number(healthInfo.height),
+        weight: Number(healthInfo.weight),
+        bmi: bmiVal,
+        bloodPressureLevel: bpValue,
+        bloodSugarLevel: bsValue,
+        surgeryCount: surgeryCountNum,
+        isSmoker: healthInfo.isSmoking,
+        isDrinker: healthInfo.isDrinking,
+        chronicDiseases: healthInfo.chronicDiseases, // 배열
+        jobType: convertedJobType,
+        hasChildren: healthInfo.hasChildren,
+        hasOwnHouse: healthInfo.hasOwnHouse,
+        hasPet: healthInfo.hasPet,
+        hasFamilyHistory: healthInfo.hasFamilyHistory,
+      };
+
+      // 예: PUT /api/user-health 수정
+      await API.put("/user-health", payload);
+      alert("건강정보 수정 완료!");
+    } catch (error) {
+      console.error("건강정보 수정 에러:", error);
+      alert("수정 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
-    <S.Form>
+    <S.Form onSubmit={handleSubmit}>
       <S.Section>
         <S.SectionTitle>기본 정보</S.SectionTitle>
         <S.Grid>
@@ -219,7 +297,7 @@ const HealthInfo = () => {
       <S.Section>
         <S.SectionTitle>만성질환</S.SectionTitle>
         <S.ChronicDiseaseGrid>
-          {chronicDiseases.map((disease) => (
+          {chronicDiseasesList.map((disease) => (
             <label key={disease}>
               <input
                 type="checkbox"
@@ -294,9 +372,10 @@ const HealthInfo = () => {
         </S.CheckboxSection>
       </S.Section>
 
+      {/* 저장 버튼 (PUT) */}
       <S.SubmitButton type="submit">저장하기</S.SubmitButton>
     </S.Form>
   );
 };
 
-export default HealthInfo;
+export default MypageHealthInfo;

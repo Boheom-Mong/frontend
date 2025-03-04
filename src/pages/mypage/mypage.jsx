@@ -1,6 +1,6 @@
 import { Routes, Route, NavLink } from "react-router-dom";
 import { useEffect } from "react";
-import * as S from "./style"; // 스타일 컴포넌트 import
+import * as S from "./style";
 import { useAuthStore } from "../../store/useAuthStore";
 import UserInfo from "./userInfo";
 import MyInsurance from "./myInsurance";
@@ -62,6 +62,14 @@ const Mypage = () => {
               className={({ isActive }) => (isActive ? "active" : "")}
             >
               나의 보험
+            </NavLink>
+          </S.NavItem>
+          <S.NavItem>
+            <NavLink
+              to="/mypage/bookmark"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              북마크
             </NavLink>
           </S.NavItem>
         </S.Nav>

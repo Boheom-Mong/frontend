@@ -6,6 +6,7 @@ import Qr from "./pages/login/totp/qr";
 import Totp from "./pages/login/totp/otpPage";
 import Signup from "./pages/signup/index";
 import Mypage from "./pages/mypage/index";
+import Recommend from "./pages/recommend/index";
 import ProductDetail from "./pages/product/detail/index";
 import ProductEnrollment from "./pages/product/enrollment/index";
 import NotFound from "./NotFound";
@@ -56,7 +57,9 @@ const router = createBrowserRouter([
       // 실패 페이지
       { path: "/payment", element: <Payment /> },
 
-      ],
+      // 보험 추천 페이지
+      { path: "/recommend", element: <Recommend /> },
+    ],
     errorElement: <NotFound />,
   },
 ]);
