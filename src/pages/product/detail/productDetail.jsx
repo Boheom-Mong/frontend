@@ -1,6 +1,4 @@
-"use client";
-
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as S from "./style";
 
 // 더미 데이터
@@ -45,12 +43,17 @@ const insuranceDetails = {
 };
 
 const ProductDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const insurance = insuranceDetails[id];
 
   if (!insurance) {
     return <div>상품을 찾을 수 없습니다.</div>;
   }
+
+  const handleApply = () => {
+    navigate(`/product/${id}/enrollment`);
+  };
 
   return (
     <S.Wrapper>
@@ -102,7 +105,7 @@ const ProductDetail = () => {
       </S.Content>
 
       <S.Actions>
-        <S.ApplyButton>가입 신청하기</S.ApplyButton>
+        <S.ApplyButton onClick={handleApply}>가입 신청하기</S.ApplyButton>
         <S.ConsultButton>상담 신청하기</S.ConsultButton>
       </S.Actions>
     </S.Wrapper>

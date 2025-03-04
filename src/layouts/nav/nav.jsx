@@ -29,7 +29,7 @@ const Nav = () => {
 
         {/* 항상 보이는 메뉴 */}
         <S.MenuWrapper>
-          <S.MenuItem to="/">보험추천</S.MenuItem>
+          <S.MenuItem to="/recommend">보험추천</S.MenuItem>
           <S.MenuItem to="/mypage/insurance">가입현황</S.MenuItem>
         </S.MenuWrapper>
       </S.LeftWrapper>
