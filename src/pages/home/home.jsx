@@ -1,8 +1,6 @@
-"use client";
-
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import * as S from "./style";
+import ProductCard from "../../components/ProductCard/ProductCard";
 
 const insuranceCategories = [
   "실손의료보험",
@@ -66,11 +64,10 @@ const dummyInsurances = [
     monthlyFee: "76,000원",
     coverage: "사망보험금 1억원, 암진단금 3천만원",
   },
-  // ... 더 많은 더미 데이터 (최소 6개 이상)
+  // ... (추가 데이터)
 ];
 
 const Home = () => {
-  const navigate = useNavigate();
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [filteredInsurances, setFilteredInsurances] = useState(dummyInsurances);
@@ -150,25 +147,7 @@ const Home = () => {
 
       <S.InsuranceList>
         {filteredInsurances.map((insurance) => (
-          <S.InsuranceCard key={insurance.id}>
-            <S.CardHeader>
-              <S.CompanyName>{insurance.company}</S.CompanyName>
-              <S.CategoryTag>{insurance.category}</S.CategoryTag>
-            </S.CardHeader>
-            <S.CardBody>
-              <h3>{insurance.name}</h3>
-              <p>{insurance.description}</p>
-              <S.MonthlyFee>월 {insurance.monthlyFee}</S.MonthlyFee>
-            </S.CardBody>
-            <S.CardFooter>
-              <S.DetailButton
-                onClick={() => navigate(`/product/${insurance.id}`)}
-              >
-                자세히 보기
-              </S.DetailButton>
-              <S.ApplyButton>신청하기</S.ApplyButton>
-            </S.CardFooter>
-          </S.InsuranceCard>
+          <ProductCard key={insurance.id} insurance={insurance} />
         ))}
       </S.InsuranceList>
     </S.Wrapper>

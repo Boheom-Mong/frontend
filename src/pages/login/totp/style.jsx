@@ -109,6 +109,7 @@ export const OtpInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 8px;
   margin-bottom: 16px;
+  margin-right: 16px;
 `;
 
 export const OtpButton = styled.button`
