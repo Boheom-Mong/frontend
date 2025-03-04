@@ -8,7 +8,6 @@ const QrPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 실제 로직: /api/totp/qr 에 GET 요청 -> qrUrl 받음
     API.get("/otp/qr")
       .then((res) => {
         setQrUrl(res.data.qrUrl);
@@ -19,7 +18,6 @@ const QrPage = () => {
   }, []);
 
   const handleNext = () => {
-    // 사용자 스캔 끝났다고 가정, OTP페이지로 이동
     navigate("/otp");
   };
 
