@@ -11,6 +11,9 @@ import ProductDetail from "./pages/product/detail/index";
 import ProductEnrollment from "./pages/product/enrollment/index";
 import NotFound from "./NotFound";
 import OAuth2RedirectHandler from "./pages/login/kakao/OAuth2RedirectHandler";
+import SuccessPage from "./pages/payment/SuccessPage";
+import FailPage from "./pages/payment/FailPage";
+import Payment from "./pages/payment/payment";
 
 // 이유진
 const router = createBrowserRouter([
@@ -43,7 +46,16 @@ const router = createBrowserRouter([
       { path: "/product/:id", element: <ProductDetail /> },
 
       // 보험 가입 페이지
-      { path: "/product/:id/enrollment", element: <ProductEnrollment /> },
+      { path: "/product/enrollment", element: <ProductEnrollment /> },
+
+      // 성공 페이지
+      { path: "/successPage", element: <SuccessPage /> },
+
+      // 실패 페이지
+      { path: "/failPage", element: <FailPage /> },
+
+      // 실패 페이지
+      { path: "/payment", element: <Payment /> },
 
       // 보험 추천 페이지
       { path: "/recommend", element: <Recommend /> },
