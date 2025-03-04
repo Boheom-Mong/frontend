@@ -94,6 +94,7 @@ export function payment() {
         customerMobilePhone: "01012345678",
       });
     } catch (error) {
+      
       alert(error);
     }
   };
