@@ -4,35 +4,56 @@ import PropTypes from "prop-types";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import * as S from "./style";
 
+// 1) 백엔드 Enum 이름 -> 한글 문자열
+const categoryMap = {
+  CANCER: "암",
+  SURGERY: "수술/입원",
+  LIFE: "종신",
+  DRIVER: "운전자/상해",
+  FIRE: "주택화재",
+  DENTAL: "치아",
+  DEMENTIA: "치매",
+  NEWBORN: "신생아",
+  HEALTHCARE: "실손의료비",
+  CHILD: "어린이보험",
+  PET: "반려동물보험",
+  NURSING: "간병보험",
+  TRAVEL: "여행자보험",
+  ETC: "기타",
+};
+
 const ProductCard = ({ insurance }) => {
   const navigate = useNavigate();
-  // 북마크 상태 (true: 북마크됨, false: 북마크 안됨)
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   const handleToggleBookmark = () => {
     setIsBookmarked((prev) => !prev);
-    // 필요하다면 여기서 API/LocalStorage 연동 가능
   };
+
+  // 2) 실제 카테고리 표시를 위해: 백엔드 Enum값 -> 한글
+  const koreanCategory =
+    categoryMap[insurance.productCategory] || insurance.productCategory;
 
   return (
     <S.InsuranceCard>
       <S.CardHeader>
-        <S.CompanyName>{insurance.company}</S.CompanyName>
-        {/* 카테고리 태그 + 북마크 아이콘을 함께 묶어줍니다. */}
+        <S.CompanyName>{insurance.companyName}</S.CompanyName>
         <S.CategoryTagWrapper onClick={handleToggleBookmark}>
-          <S.CategoryTag>{insurance.category}</S.CategoryTag>
+          <S.CategoryTag>{koreanCategory}</S.CategoryTag>
           {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
         </S.CategoryTagWrapper>
       </S.CardHeader>
 
       <S.CardBody>
-        <h3>{insurance.name}</h3>
-        <p>{insurance.description}</p>
-        <S.MonthlyFee>월 {insurance.monthlyFee}</S.MonthlyFee>
+        <h3>{insurance.productName}</h3>
+        <p>{insurance.coverageDetails}</p>
+        <S.MonthlyFee>월 {insurance.monthlyPremium}원</S.MonthlyFee>
       </S.CardBody>
 
       <S.CardFooter>
-        <S.DetailButton onClick={() => navigate(`/product/${insurance.id}`)}>
+        <S.DetailButton
+          onClick={() => navigate(`/product/${insurance.productId}`)}
+        >
           자세히 보기
         </S.DetailButton>
         <S.ApplyButton>신청하기</S.ApplyButton>
@@ -43,13 +64,12 @@ const ProductCard = ({ insurance }) => {
 
 ProductCard.propTypes = {
   insurance: PropTypes.shape({
-    id: PropTypes.number,
-    company: PropTypes.string,
-    name: PropTypes.string,
-    category: PropTypes.string,
-    description: PropTypes.string,
-    monthlyFee: PropTypes.string,
-    coverage: PropTypes.string,
+    productId: PropTypes.number.isRequired,
+    companyName: PropTypes.string.isRequired,
+    productName: PropTypes.string.isRequired,
+    productCategory: PropTypes.string.isRequired,
+    coverageDetails: PropTypes.string.isRequired,
+    monthlyPremium: PropTypes.number.isRequired,
   }).isRequired,
 };
 
