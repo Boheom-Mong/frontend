@@ -1,4 +1,5 @@
-import styled from "styled-components";
+// style.jsx
+import styled, { css } from "styled-components";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -6,42 +7,74 @@ export const Wrapper = styled.div`
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
 `;
 
-export const Header = styled.div`
-  text-align: center;
-  color: #4169e1;
-  margin-bottom: 2rem;
+export const Header = styled.header`
+  /* 기존 blue 배경 유지 */
+  background-color: #4169e1;
+  color: #fff;
+  padding: 2rem;
 
-  h1 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
+  /* 좌우로 나란히 배치하기 */
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  /* 모바일 환경 대비 반응형 예시 */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
   }
 
-  h2 {
-    font-size: 2.5rem;
-    font-weight: bold;
+  .header-content {
+    /* 왼쪽 텍스트 구역 */
+    max-width: 600px; /* 글 영역 넓이 조절 */
+
+    h1 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    h2 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    p {
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+  }
+
+  .header-image {
+    /* 오른쪽 캐릭터 이미지 */
+    width: 100px; /* 원하는 크기로 조절 */
+    height: auto;
+    margin-left: 2rem;
+
+    @media (max-width: 768px) {
+      margin-left: 0;
+      margin-top: 1rem;
+      width: 180px;
+    }
   }
 `;
 
 export const FilterSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  background: white;
+  gap: 1.5rem;
+  background: #fff;
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 `;
 
 export const FilterContainer = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 2rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
 `;
 
 export const FilterGroup = styled.div`
@@ -50,28 +83,56 @@ export const FilterGroup = styled.div`
   h3 {
     margin-bottom: 1rem;
     font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
   }
 `;
 
 export const CheckboxGroup = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
+`;
 
-  label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
+export const CheckboxLabel = styled.label.withConfig({
+  shouldForwardProp: (prop) => prop !== "isChecked",
+})`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s, color 0.2s;
+
+  ${({ isChecked }) =>
+    isChecked
+      ? css`
+          background-color: #4169e1;
+          color: #fff;
+        `
+      : css`
+          background-color: #f1f2f6;
+          color: #333;
+        `}
+
+  &:hover {
+    filter: brightness(0.95);
   }
 
   input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
   }
 `;
 
 export const SearchButton = styled.button`
+  align-self: flex-end;
   padding: 0.75rem 1.5rem;
   background-color: #4169e1;
   color: white;
@@ -85,6 +146,12 @@ export const SearchButton = styled.button`
   &:hover {
     background-color: #3157d1;
   }
+
+  @media (max-width: 768px) {
+    align-self: center;
+    width: 100%;
+    max-width: 300px;
+  }
 `;
 
 export const InsuranceList = styled.div`
@@ -95,7 +162,6 @@ export const InsuranceList = styled.div`
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
   }
-
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }

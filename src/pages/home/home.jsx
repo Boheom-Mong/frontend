@@ -1,153 +1,127 @@
-import { useState } from "react";
+// Home.jsx
+import { useEffect } from "react";
 import * as S from "./style";
 import ProductCard from "../../components/ProductCard/ProductCard";
+import useInsuranceProductStore from "../../store/useInsuranceProductStore";
 
 const insuranceCategories = [
-  "실손의료보험",
-  "암보험",
-  "치아보험",
-  "운전자보험",
-  "종신보험",
-  "연금보험",
-  "저축보험",
-  "화재보험",
-  "여행자보험",
-  "펫보험",
-  "어린이보험",
-  "실버보험",
-  "단체보험",
-  "건강보험",
+  { value: "CANCER", label: "암보험" },
+  { value: "SURGERY", label: "수술/입원" },
+  { value: "LIFE", label: "종신보험" },
+  { value: "DRIVER", label: "운전자/상해" },
+  { value: "FIRE", label: "주택화재" },
+  { value: "DENTAL", label: "치아" },
+  { value: "DEMENTIA", label: "치매" },
+  { value: "NEWBORN", label: "신생아" },
+  { value: "HEALTHCARE", label: "실손의료비" },
+  { value: "CHILD", label: "어린이보험" },
+  { value: "PET", label: "반려동물보험" },
+  { value: "NURSING", label: "간병보험" },
+  { value: "TRAVEL", label: "여행자보험" },
+  { value: "ETC", label: "기타보험" },
 ];
 
 const insuranceCompanies = [
-  "삼성생명",
+  "삼성화재",
   "한화생명",
-  "교보생명",
-  "메리츠화재",
+  "현대해상",
+  "롯데손해보험",
   "DB손해보험",
 ];
 
-const dummyInsurances = [
-  {
-    id: 1,
-    company: "삼성생명",
-    name: "스마트보장스페셜종신보험",
-    category: "종신보험",
-    description: "든든한 보장과 함께 스마트한 혜택을 제공하는 종신보험입니다.",
-    monthlyFee: "89,000원",
-    coverage: "사망보험금 1억원, 재해사망보험금 2억원",
-  },
-  {
-    id: 2,
-    company: "한화생명",
-    name: "건강백세종신보험",
-    category: "종신보험",
-    description: "평생 든든한 보장으로 건강한 삶을 지켜드립니다.",
-    monthlyFee: "76,000원",
-    coverage: "사망보험금 1억원, 암진단금 3천만원",
-  },
-  {
-    id: 3,
-    company: "한화생명",
-    name: "건강백세종신보험",
-    category: "종신보험",
-    description: "평생 든든한 보장으로 건강한 삶을 지켜드립니다.",
-    monthlyFee: "76,000원",
-    coverage: "사망보험금 1억원, 암진단금 3천만원",
-  },
-  {
-    id: 4,
-    company: "한화생명",
-    name: "건강백세종신보험",
-    category: "종신보험",
-    description: "평생 든든한 보장으로 건강한 삶을 지켜드립니다.",
-    monthlyFee: "76,000원",
-    coverage: "사망보험금 1억원, 암진단금 3천만원",
-  },
-  // ... (추가 데이터)
-];
-
 const Home = () => {
-  const [selectedCompanies, setSelectedCompanies] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [filteredInsurances, setFilteredInsurances] = useState(dummyInsurances);
+  const {
+    insuranceProducts,
+    selectedCompanies,
+    selectedCategories,
+    toggleCompany,
+    toggleCategory,
+    fetchInsuranceProducts,
+    searchInsuranceProducts,
+    loading,
+    error,
+  } = useInsuranceProductStore();
 
-  const handleCompanyChange = (company) => {
-    setSelectedCompanies((prev) =>
-      prev.includes(company)
-        ? prev.filter((c) => c !== company)
-        : [...prev, company]
-    );
-  };
-
-  const handleCategoryChange = (category) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
-    );
-  };
+  useEffect(() => {
+    fetchInsuranceProducts();
+  }, [fetchInsuranceProducts]);
 
   const handleSearch = () => {
-    const filtered = dummyInsurances.filter((insurance) => {
-      const companyMatch =
-        selectedCompanies.length === 0 ||
-        selectedCompanies.includes(insurance.company);
-      const categoryMatch =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(insurance.category);
-      return companyMatch && categoryMatch;
-    });
-    setFilteredInsurances(filtered);
+    searchInsuranceProducts();
   };
 
   return (
     <S.Wrapper>
       <S.Header>
-        <h1>간단 입력만으로 나에게 맞는 보험을 시뮬레이션!</h1>
-        <h2>BOHUEM MONG</h2>
+        <div className="header-content">
+          <h1>간단 입력만으로 나에게 맞는 보험을 시뮬레이션!</h1>
+          <h2>BOHUEM MONG</h2>
+          <p>
+            보험 가입, 어렵게 느껴지시나요? 🤔 <br />
+            복잡한 절차 없이 쉽고 빠르게 보험 가입을 체험하고, 나에게 맞는
+            보험을 비교해보세요!
+            <br />
+            🚀 지금 바로 보험몽에서 보험 가입을 미리 경험하고, 합리적인 선택을
+            해보세요.
+          </p>
+        </div>
+
+        {/* sesac.png 이미지를 우측에 배치 */}
+        <img src="/img/sesac.png" alt="세싹 캐릭터" className="header-image" />
       </S.Header>
 
       <S.FilterSection>
         <S.FilterContainer>
+          {/* 보험사 */}
           <S.FilterGroup>
             <h3>보험사</h3>
             <S.CheckboxGroup>
               {insuranceCompanies.map((company) => (
-                <label key={company}>
+                <S.CheckboxLabel
+                  key={company}
+                  isChecked={selectedCompanies.includes(company)}
+                >
                   <input
                     type="checkbox"
                     checked={selectedCompanies.includes(company)}
-                    onChange={() => handleCompanyChange(company)}
+                    onChange={() => toggleCompany(company)}
                   />
-                  {company}
-                </label>
+                  <span>{company}</span>
+                </S.CheckboxLabel>
               ))}
             </S.CheckboxGroup>
           </S.FilterGroup>
 
+          {/* 보험 카테고리 */}
           <S.FilterGroup>
             <h3>보험 카테고리</h3>
             <S.CheckboxGroup>
-              {insuranceCategories.map((category) => (
-                <label key={category}>
+              {insuranceCategories.map(({ value, label }) => (
+                <S.CheckboxLabel
+                  key={value}
+                  isChecked={selectedCategories.includes(value)}
+                >
                   <input
                     type="checkbox"
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => handleCategoryChange(category)}
+                    checked={selectedCategories.includes(value)}
+                    onChange={() => toggleCategory(value)}
                   />
-                  {category}
-                </label>
+                  <span>{label}</span>
+                </S.CheckboxLabel>
               ))}
             </S.CheckboxGroup>
           </S.FilterGroup>
         </S.FilterContainer>
+
         <S.SearchButton onClick={handleSearch}>검색</S.SearchButton>
       </S.FilterSection>
 
+      {loading && <div>불러오는 중...</div>}
+      {error && <div>에러 발생: {error}</div>}
+
       <S.InsuranceList>
-        {filteredInsurances.map((insurance) => (
-          <ProductCard key={insurance.id} insurance={insurance} />
+        {insuranceProducts.map((insurance) => (
+          <ProductCard key={insurance.productId} insurance={insurance} />
         ))}
       </S.InsuranceList>
     </S.Wrapper>
