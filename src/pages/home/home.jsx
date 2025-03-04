@@ -27,6 +27,9 @@ const insuranceCompanies = [
   "현대해상",
   "롯데손해보험",
   "DB손해보험",
+  "메리츠화재",
+  "한화손해보험",
+  "흥국화재",
 ];
 
 const Home = () => {
@@ -40,15 +43,40 @@ const Home = () => {
     searchInsuranceProducts,
     loading,
     error,
+    currentPage,
+    totalPages,
   } = useInsuranceProductStore();
 
   useEffect(() => {
-    fetchInsuranceProducts();
+    fetchInsuranceProducts(1);
   }, [fetchInsuranceProducts]);
 
   const handleSearch = () => {
-    searchInsuranceProducts();
+    searchInsuranceProducts(1);
   };
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > totalPages) return; // 범위 밖 체크
+
+    // 필터가 하나라도 선택되어 있으면 필터검색, 없으면 전체목록
+    if (selectedCompanies.length > 0 || selectedCategories.length > 0) {
+      searchInsuranceProducts(newPage);
+    } else {
+      fetchInsuranceProducts(newPage);
+    }
+  };
+
+  // --- 블록(그룹) 계산 ---
+  // 예) currentPage=11이면 -> blockIndex=1 -> start=11, end=20 (단, totalPages=13 이면 end=13)
+  const blockIndex = Math.floor((currentPage - 1) / 10); 
+  const startPage = blockIndex * 10 + 1;
+  const endPage = Math.min(startPage + 9, totalPages);
+
+  // [startPage..endPage] 배열 생성
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
 
   return (
     <S.Wrapper>
@@ -124,6 +152,37 @@ const Home = () => {
           <ProductCard key={insurance.productId} insurance={insurance} />
         ))}
       </S.InsuranceList>
+      {/* --------------------------
+          페이지네이션 영역
+      -------------------------- */}
+      <S.PaginationContainer>
+        {/* Prev 버튼 */}
+        <S.PageButton
+          disabled={currentPage <= 1}
+          onClick={() => handlePageChange(currentPage - 1)}
+        >
+          Prev
+        </S.PageButton>
+
+        {/* 페이지 번호들 (startPage..endPage) */}
+        {pageNumbers.map((pageNum) => (
+          <S.PageButton
+            key={pageNum}
+            onClick={() => handlePageChange(pageNum)}
+            isActive={currentPage === pageNum}
+          >
+            {pageNum}
+          </S.PageButton>
+        ))}
+
+        {/* Next 버튼 */}
+        <S.PageButton
+          disabled={currentPage >= totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
+        >
+          Next
+        </S.PageButton>
+      </S.PaginationContainer>
     </S.Wrapper>
   );
 };

@@ -165,4 +165,47 @@ export const InsuranceList = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
+`
+
+export const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
 `;
+
+export const PageButton = styled.button`
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  /* 기본 색상: 비활성 (회색 배경) */
+  background-color: #f1f2f6;
+  color: #333;
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.6;
+      cursor: not-allowed;
+    `}
+
+  /* isActive(현재 페이지)면 기존 주 색(#4169e1)으로 */
+  ${({ isActive }) =>
+    isActive &&
+    css`
+      background-color: #4169e1;
+      color: #fff;
+    `}
+
+  /* 마우스 호버 효과 */
+  &:hover:not(:disabled) {
+    filter: brightness(0.95);
+  }
+`;
+
+;
