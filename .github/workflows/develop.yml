@@ -42,8 +42,8 @@ jobs:
           host: ${{ secrets.REMOTE_IP }}                # EC2 퍼블릭 IP 혹은 도메인
           username: ubuntu
           key: ${{ secrets.REMOTE_PRIVATE_KEY }}        # PEM 키를 GitHub Secrets에 등록
-          source: "dist/**"                             # dist 폴더 안 모든 파일
-          target: "/home/ubuntu/frontend/dist"          # 원하는 디렉토리
+          source: "dist"         # 폴더 자체
+          target: "/home/ubuntu/frontend"        # 원하는 디렉토리
 
       # (6) SSH 접속 후 Nginx 재시작(or 원하는 명령)
       - name: SSH reload
