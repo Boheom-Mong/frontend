@@ -14,6 +14,12 @@ const chronicDiseasesList = [
   "암",
   "간염",
   "심부전",
+  "편두통",
+  "골다공증",
+  "COPD",
+  "간경화",
+  "만성신장질환",
+  "갑상선질환",
 ];
 
 // 직업 한글 목록
@@ -270,28 +276,28 @@ const MypageHealthInfo = () => {
               ))}
             </S.Select>
           </S.InputGroup>
-        </S.Grid>
 
-        <S.CheckboxSection>
-          <label>
-            <input
-              type="checkbox"
-              name="isSmoking"
-              checked={healthInfo.isSmoking}
-              onChange={handleChange}
-            />
-            흡연
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="isDrinking"
-              checked={healthInfo.isDrinking}
-              onChange={handleChange}
-            />
-            음주
-          </label>
-        </S.CheckboxSection>
+          <S.CheckboxSection>
+            <label>
+              <input
+                type="checkbox"
+                name="isSmoking"
+                checked={healthInfo.isSmoking}
+                onChange={handleChange}
+              />
+              흡연
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="isDrinking"
+                checked={healthInfo.isDrinking}
+                onChange={handleChange}
+              />
+              음주
+            </label>
+          </S.CheckboxSection>
+        </S.Grid>
       </S.Section>
 
       <S.Section>
