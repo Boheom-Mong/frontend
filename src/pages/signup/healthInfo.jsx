@@ -3,6 +3,27 @@ import { useNavigate } from "react-router-dom";
 import * as S from "./style";
 import { useUserHealthStore } from "../../store/useUserHeatlhStore";
 
+// Java 파일(ChronicDisease.java)에 나열된 질환 목록(한글 명칭)
+// 고혈압, 당뇨, 고지혈증, 천식, 관절염, 뇌졸중, 협심증, 암, 간염, 심부전, 편두통, 골다공증, COPD(만성폐쇄성폐질환), 간경화, 만성신장질환, 갑상선질환
+const chronicDiseaseList = [
+  "고혈압",
+  "당뇨",
+  "고지혈증",
+  "천식",
+  "관절염",
+  "뇌졸중",
+  "협심증",
+  "암",
+  "간염",
+  "심부전",
+  "편두통",
+  "골다공증",
+  "COPD",
+  "간경화",
+  "만성신장질환",
+  "갑상선질환",
+];
+
 // 직업 한글 목록, Enum 매핑
 const jobTypes = ["사무직", "배달", "건설", "자영업", "학생", "무직"];
 const jobTypeMap = {
@@ -34,6 +55,7 @@ const HealthInfo = () => {
     hasOwnHouse: false,
     hasPet: false,
     hasFamilyHistory: false,
+    surgeryCount: "0", // 수술 횟수 (기본값 0)
   });
 
   const { postUserHealthInfo } = useUserHealthStore();
@@ -109,6 +131,7 @@ const HealthInfo = () => {
       hasOwnHouse: info.hasOwnHouse,
       hasPet: info.hasPet,
       hasFamilyHistory: info.hasFamilyHistory,
+      surgeryCount: Number(info.surgeryCount),
     };
 
     try {
@@ -132,7 +155,10 @@ const HealthInfo = () => {
             <S.SectionTitle>기본 정보</S.SectionTitle>
             <S.Grid>
               <S.InputGroup>
-                <label>나이*</label>
+                {/* 필수 항목 *를 빨간색으로 표시 */}
+                <label>
+                  나이<span style={{ color: "red" }}>*</span>
+                </label>
                 <S.Input
                   type="number"
                   name="age"
@@ -141,7 +167,9 @@ const HealthInfo = () => {
                 />
               </S.InputGroup>
               <S.InputGroup>
-                <label>성별*</label>
+                <label>
+                  성별<span style={{ color: "red" }}>*</span>
+                </label>
                 <div>
                   <label>
                     <input
@@ -166,7 +194,9 @@ const HealthInfo = () => {
                 </div>
               </S.InputGroup>
               <S.InputGroup>
-                <label>키(cm)*</label>
+                <label>
+                  키(cm)<span style={{ color: "red" }}>*</span>
+                </label>
                 <S.Input
                   type="number"
                   name="height"
@@ -175,7 +205,9 @@ const HealthInfo = () => {
                 />
               </S.InputGroup>
               <S.InputGroup>
-                <label>몸무게(kg)*</label>
+                <label>
+                  몸무게(kg)<span style={{ color: "red" }}>*</span>
+                </label>
                 <S.Input
                   type="number"
                   name="weight"
@@ -223,27 +255,44 @@ const HealthInfo = () => {
                 </S.Select>
               </S.InputGroup>
             </S.Grid>
+            <S.Grid>
+              {/* 수술횟수 추가 (0~5회) */}
+              <S.InputGroup>
+                <label>수술횟수</label>
+                <S.Select
+                  name="surgeryCount"
+                  value={info.surgeryCount}
+                  onChange={handleChange}
+                >
+                  {Array.from({ length: 6 }, (_, i) => (
+                    <option key={i} value={i}>
+                      {i}회
+                    </option>
+                  ))}
+                </S.Select>
+              </S.InputGroup>
 
-            <S.CheckboxSection>
-              <label>
-                <input
-                  type="checkbox"
-                  name="isSmoking"
-                  checked={info.isSmoking}
-                  onChange={handleChange}
-                />
-                흡연
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="isDrinking"
-                  checked={info.isDrinking}
-                  onChange={handleChange}
-                />
-                음주
-              </label>
-            </S.CheckboxSection>
+              <S.CheckboxSection>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="isSmoking"
+                    checked={info.isSmoking}
+                    onChange={handleChange}
+                  />
+                  흡연
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="isDrinking"
+                    checked={info.isDrinking}
+                    onChange={handleChange}
+                  />
+                  음주
+                </label>
+              </S.CheckboxSection>
+            </S.Grid>
           </S.Section>
         </S.Column>
 
@@ -252,8 +301,8 @@ const HealthInfo = () => {
           <S.Section>
             <S.SectionTitle>만성질환</S.SectionTitle>
             <S.ChronicDiseaseGrid>
-              {["고혈압", "당뇨", "고지혈증", "천식", "암"].map((disease) => (
-                <label key={disease}>
+              {chronicDiseaseList.map((disease) => (
+                <S.DiseaseLabel key={disease}>
                   <input
                     type="checkbox"
                     name="chronicDiseases"
@@ -262,7 +311,7 @@ const HealthInfo = () => {
                     onChange={handleChange}
                   />
                   {disease}
-                </label>
+                </S.DiseaseLabel>
               ))}
             </S.ChronicDiseaseGrid>
           </S.Section>
