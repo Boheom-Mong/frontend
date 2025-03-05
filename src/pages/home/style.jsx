@@ -10,25 +10,20 @@ export const Wrapper = styled.div`
 `;
 
 export const Header = styled.header`
-  /* 기존 blue 배경 유지 */
   background-color: #4169e1;
   color: #fff;
   padding: 2rem;
-
-  /* 좌우로 나란히 배치하기 */
   display: flex;
   align-items: center;
   justify-content: space-around;
 
-  /* 모바일 환경 대비 반응형 예시 */
   @media (max-width: 768px) {
     flex-direction: column;
     text-align: center;
   }
 
   .header-content {
-    /* 왼쪽 텍스트 구역 */
-    max-width: 600px; /* 글 영역 넓이 조절 */
+    max-width: 600px;
 
     h1 {
       font-size: 1.2rem;
@@ -48,8 +43,7 @@ export const Header = styled.header`
   }
 
   .header-image {
-    /* 오른쪽 캐릭터 이미지 */
-    width: 100px; /* 원하는 크기로 조절 */
+    width: 100px;
     height: auto;
     margin-left: 2rem;
 
@@ -71,15 +65,26 @@ export const FilterSection = styled.div`
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 `;
 
+/* 
+  변경된 부분: 
+  - 가로 배치 (flex-direction: row)
+  - 양 끝에 배치 (justify-content: space-between)
+  - 모바일에서 column으로 전환
+*/
 export const FilterContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   gap: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 export const FilterGroup = styled.div`
-  flex: 1;
-
+  flex: 1; /* 가로 공간을 양쪽 그룹이 균등 분할 */
+  
   h3 {
     margin-bottom: 1rem;
     font-weight: bold;
@@ -165,7 +170,7 @@ export const InsuranceList = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
-`
+`;
 
 export const PaginationContainer = styled.div`
   display: flex;
@@ -202,10 +207,7 @@ export const PageButton = styled.button`
       color: #fff;
     `}
 
-  /* 마우스 호버 효과 */
   &:hover:not(:disabled) {
     filter: brightness(0.95);
   }
 `;
-
-;

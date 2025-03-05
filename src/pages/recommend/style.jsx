@@ -44,6 +44,7 @@ export const UserName = styled.h2`
 `;
 
 export const AnalysisText = styled.p`
+  white-space: pre-wrap;
   font-size: 1.1rem;
   line-height: 1.6;
   color: #444;
