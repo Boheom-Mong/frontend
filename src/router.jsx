@@ -10,7 +10,6 @@ import Recommend from "./pages/recommend/index";
 import ProductDetail from "./pages/product/detail/index";
 import ProductEnrollment from "./pages/product/enrollment/index";
 import NotFound from "./NotFound";
-import OAuth2RedirectHandler from "./pages/login/kakao/OAuth2RedirectHandler";
 import SuccessPage from "./pages/payment/SuccessPage";
 import FailPage from "./pages/payment/FailPage";
 import Payment from "./pages/payment/payment";
@@ -37,8 +36,6 @@ const router = createBrowserRouter([
       // 2차인증 otp 번호 입력 페이지
       { path: "/otp", element: <Totp /> },
 
-      // 카카오 OAuth 리다이렉트 핸들러 (보호 필요 없음)
-      { path: "/login/oauth2/code/kakao", element: <OAuth2RedirectHandler /> },
 
       // 마이 페이지
       { path: "/mypage/*", element: <Mypage /> },
