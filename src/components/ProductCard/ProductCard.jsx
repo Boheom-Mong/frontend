@@ -47,7 +47,7 @@ const ProductCard = ({ insurance }) => {
       <S.CardBody>
         <h3>{insurance.productName}</h3>
         <p>{insurance.coverageDetails}</p>
-        <S.MonthlyFee>월 {insurance.monthlyPremium}원</S.MonthlyFee>
+        <S.MonthlyFee>월 {insurance.monthlyPremium.toLocaleString()}원</S.MonthlyFee>
       </S.CardBody>
 
       <S.CardFooter>

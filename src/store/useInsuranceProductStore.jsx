@@ -52,8 +52,6 @@ const useInsuranceProductStore = create((set, get) => ({
         },
       });
 
-      console.log("백엔드 전체상품 응답:", response.data);
-
       const result = response.data.result; // Page<InsuranceProductResponseDto>
       const products = result?.content ?? [];
 
@@ -88,8 +86,6 @@ const useInsuranceProductStore = create((set, get) => ({
         },
       });
 
-      console.log("백엔드 필터검색 응답:", response.data);
-
       const result = response.data.result;
       const products = result?.content ?? [];
 
@@ -102,6 +98,12 @@ const useInsuranceProductStore = create((set, get) => ({
     } catch (err) {
       set({ error: err.message, loading: false });
     }
+  },
+  // (5) ★ 추가: ID로 상품 찾기
+  findInsuranceById: (productId) => {
+    const { insuranceProducts } = get();
+    // 로컬에 저장된 상품 배열(insuranceProducts)에서 해당 productId를 찾아 반환
+    return insuranceProducts.find((item) => item.productId === productId);
   },
 }));
 
