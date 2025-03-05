@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as S from "./style";
-import API from "../../store";
+import { useUserHealthStore } from "../../store/useUserHeatlhStore";
 
 // 만성질환 목록 예시
 const chronicDiseasesList = [
@@ -14,6 +14,12 @@ const chronicDiseasesList = [
   "암",
   "간염",
   "심부전",
+  "편두통",
+  "골다공증",
+  "COPD",
+  "간경화",
+  "만성신장질환",
+  "갑상선질환",
 ];
 
 // 직업 한글 목록
@@ -31,28 +37,74 @@ const jobTypeMap = {
 };
 
 const MypageHealthInfo = () => {
+  const updateUserHealthInfo = useUserHealthStore(
+    (state) => state.updateUserHealthInfo
+  );
+  const getUserHealthInfo = useUserHealthStore(
+    (state) => state.getUserHealthInfo
+  );
+
+  // 로컬 상태
   const [healthInfo, setHealthInfo] = useState({
-    // 기본 정보
     age: "",
     gender: "",
     height: "",
     weight: "",
-    // 건강 상태
     bloodPressureLevel: "",
     bloodSugarLevel: "",
     surgeryCount: "0",
     isSmoking: false,
     isDrinking: false,
-    // 만성질환
-    chronicDiseases: [],
-    // 직업
+    chronicDiseases: [], // 로컬에서는 chronicDiseases 라는 이름으로 관리
     jobType: "",
-    // 생활 정보
     hasChildren: false,
     hasOwnHouse: false,
     hasPet: false,
     hasFamilyHistory: false,
   });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getUserHealthInfo();
+        if (data?.result) {
+          const info = data.result;
+
+          // 만성질환은 서버에서 'chronicDiseaseList'라는 배열로 내려온다고 가정
+          setHealthInfo({
+            age: info.age ?? "",
+            gender: info.gender ?? "",
+            height: info.height ?? "",
+            weight: info.weight ?? "",
+            bloodPressureLevel: info.bloodPressureLevel ?? "",
+            bloodSugarLevel: info.bloodSugarLevel ?? "",
+            surgeryCount: info.surgeryCount?.toString() ?? "0",
+            isSmoking: info.isSmoker ?? false,
+            isDrinking: info.isDrinker ?? false,
+            // ▼ 서버의 chronicDiseaseList → 로컬 state chronicDiseases
+            chronicDiseases: Array.isArray(info.chronicDiseaseList)
+              ? info.chronicDiseaseList
+              : [],
+            jobType: reverseMapJobType(info.jobType),
+            hasChildren: info.hasChildren ?? false,
+            hasOwnHouse: info.hasOwnHouse ?? false,
+            hasPet: info.hasPet ?? false,
+            hasFamilyHistory: info.hasFamilyHistory ?? false,
+          });
+        }
+      } catch (error) {
+        console.error("초기 건강정보 조회 실패:", error);
+      }
+    })();
+  }, [getUserHealthInfo]);
+
+  // 백엔드 enum → 한글 역매핑
+  const reverseMapJobType = (enumVal) => {
+    const found = Object.entries(jobTypeMap).find(
+      ([, value]) => value === enumVal
+    );
+    return found ? found[0] : "";
+  };
 
   // BMI 계산
   const calculateBMI = () => {
@@ -60,15 +112,13 @@ const MypageHealthInfo = () => {
     const w = Number(healthInfo.weight);
     if (!h || !w) return null;
     const meters = h / 100;
-    const rawBmi = w / (meters * meters);
-    // 소수점 1자리 유지
-    return Number(rawBmi.toFixed(1));
+    return Number((w / (meters * meters)).toFixed(1));
   };
 
+  // 인풋/체크박스/라디오 등 변경 핸들러
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    // 체크박스 분기
     if (type === "checkbox") {
       if (name === "chronicDiseases") {
         // 만성질환: 다중 체크
@@ -79,14 +129,14 @@ const MypageHealthInfo = () => {
             : prev.chronicDiseases.filter((d) => d !== value),
         }));
       } else {
-        // 단일 체크 (흡연, 음주 등)
+        // 단일 체크(흡연, 음주 등)
         setHealthInfo((prev) => ({
           ...prev,
           [name]: checked,
         }));
       }
     } else {
-      // 라디오나 텍스트/셀렉트
+      // 라디오나 셀렉트, 텍스트 인풋
       setHealthInfo((prev) => ({
         ...prev,
         [name]: value,
@@ -94,15 +144,12 @@ const MypageHealthInfo = () => {
     }
   };
 
-  // 예시: 서버에 PUT으로 수정 요청
+  // PUT 요청 (만성질환 수정 포함)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // 직업: 한글 → Enum 상수
       const convertedJobType = jobTypeMap[healthInfo.jobType] || "UNEMPLOYED";
-
-      // 숫자 변환(빈 문자열이면 null)
       const bpValue =
         healthInfo.bloodPressureLevel === ""
           ? null
@@ -112,10 +159,9 @@ const MypageHealthInfo = () => {
           ? null
           : Number(healthInfo.bloodSugarLevel);
       const surgeryCountNum = Number(healthInfo.surgeryCount);
+      const bmiVal = calculateBMI();
 
-      // BMI
-      const bmiVal = calculateBMI(); // number or null
-
+      // 서버가 'chronicDiseaseList'라는 키로 받는다고 가정
       const payload = {
         age: Number(healthInfo.age),
         gender: healthInfo.gender,
@@ -127,7 +173,8 @@ const MypageHealthInfo = () => {
         surgeryCount: surgeryCountNum,
         isSmoker: healthInfo.isSmoking,
         isDrinker: healthInfo.isDrinking,
-        chronicDiseases: healthInfo.chronicDiseases, // 배열
+        // ▼ 로컬 chronicDiseases → 서버 chronicDiseaseList
+        chronicDiseaseList: healthInfo.chronicDiseases,
         jobType: convertedJobType,
         hasChildren: healthInfo.hasChildren,
         hasOwnHouse: healthInfo.hasOwnHouse,
@@ -135,8 +182,7 @@ const MypageHealthInfo = () => {
         hasFamilyHistory: healthInfo.hasFamilyHistory,
       };
 
-      // 예: PUT /api/user-health 수정
-      await API.put("/user-health", payload);
+      await updateUserHealthInfo(payload);
       alert("건강정보 수정 완료!");
     } catch (error) {
       console.error("건강정보 수정 에러:", error);
@@ -146,6 +192,9 @@ const MypageHealthInfo = () => {
 
   return (
     <S.Form onSubmit={handleSubmit}>
+      {/* ------------------------
+          (1) 기본 정보 섹션
+       ------------------------ */}
       <S.Section>
         <S.SectionTitle>기본 정보</S.SectionTitle>
         <S.Grid>
@@ -160,7 +209,6 @@ const MypageHealthInfo = () => {
               placeholder="나이 입력"
             />
           </S.InputGroup>
-
           <S.InputGroup>
             <label>성별</label>
             <S.RadioGroup>
@@ -218,6 +266,9 @@ const MypageHealthInfo = () => {
         </S.Grid>
       </S.Section>
 
+      {/* ------------------------
+          (2) 건강 상태 섹션
+       ------------------------ */}
       <S.Section>
         <S.SectionTitle>건강 상태</S.SectionTitle>
         <S.Grid>
@@ -270,30 +321,33 @@ const MypageHealthInfo = () => {
               ))}
             </S.Select>
           </S.InputGroup>
-        </S.Grid>
 
-        <S.CheckboxSection>
-          <label>
-            <input
-              type="checkbox"
-              name="isSmoking"
-              checked={healthInfo.isSmoking}
-              onChange={handleChange}
-            />
-            흡연
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="isDrinking"
-              checked={healthInfo.isDrinking}
-              onChange={handleChange}
-            />
-            음주
-          </label>
-        </S.CheckboxSection>
+          <S.CheckboxSection>
+            <label>
+              <input
+                type="checkbox"
+                name="isSmoking"
+                checked={healthInfo.isSmoking}
+                onChange={handleChange}
+              />
+              흡연
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="isDrinking"
+                checked={healthInfo.isDrinking}
+                onChange={handleChange}
+              />
+              음주
+            </label>
+          </S.CheckboxSection>
+        </S.Grid>
       </S.Section>
 
+      {/* ------------------------
+          (3) 만성질환 섹션
+       ------------------------ */}
       <S.Section>
         <S.SectionTitle>만성질환</S.SectionTitle>
         <S.ChronicDiseaseGrid>
@@ -312,6 +366,9 @@ const MypageHealthInfo = () => {
         </S.ChronicDiseaseGrid>
       </S.Section>
 
+      {/* ------------------------
+          (4) 직업 정보 섹션
+       ------------------------ */}
       <S.Section>
         <S.SectionTitle>직업 정보</S.SectionTitle>
         <S.RadioGroup>
@@ -330,6 +387,9 @@ const MypageHealthInfo = () => {
         </S.RadioGroup>
       </S.Section>
 
+      {/* ------------------------
+          (5) 생활 정보 섹션
+       ------------------------ */}
       <S.Section>
         <S.SectionTitle>생활 정보</S.SectionTitle>
         <S.CheckboxSection>

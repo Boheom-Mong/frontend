@@ -14,6 +14,7 @@ import OAuth2RedirectHandler from "./pages/login/kakao/OAuth2RedirectHandler";
 import SuccessPage from "./pages/payment/SuccessPage";
 import FailPage from "./pages/payment/FailPage";
 import Payment from "./pages/payment/payment";
+import Agreement from "./pages/product/agreement/index";
 
 // 이유진
 const router = createBrowserRouter([
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
       { path: "/product/:id", element: <ProductDetail /> },
 
       // 보험 가입 페이지
-      { path: "/product/enrollment", element: <ProductEnrollment /> },
+      { path: "/product/:id/enrollment", element: <ProductEnrollment /> },
 
       // 성공 페이지
       { path: "/successPage", element: <SuccessPage /> },
@@ -59,6 +60,9 @@ const router = createBrowserRouter([
 
       // 보험 추천 페이지
       { path: "/recommend", element: <Recommend /> },
+
+      // 동의 페이지
+      { path: "/agreement", element: <Agreement /> },
     ],
     errorElement: <NotFound />,
   },
