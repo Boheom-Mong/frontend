@@ -51,7 +51,7 @@ jobs:
           script_stop: true
           script: |
             echo "Remove old cache files if needed..."
-            rm -rf /home/ubuntu/frontend/dist/*
+          # rm -rf /home/ubuntu/frontend/dist/*
 
             echo "Reload Nginx..."
             sudo systemctl reload nginx
