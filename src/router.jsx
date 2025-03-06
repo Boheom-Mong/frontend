@@ -36,7 +36,6 @@ const router = createBrowserRouter([
       // 2차인증 otp 번호 입력 페이지
       { path: "/otp", element: <Totp /> },
 
-
       // 마이 페이지
       { path: "/mypage/*", element: <Mypage /> },
 
@@ -59,7 +58,7 @@ const router = createBrowserRouter([
       { path: "/recommend", element: <Recommend /> },
 
       // 동의 페이지
-      { path: "/agreement", element: <Agreement /> },
+      { path: "/agreement/:id", element: <Agreement /> },
     ],
     errorElement: <NotFound />,
   },
