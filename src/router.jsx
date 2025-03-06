@@ -16,9 +16,8 @@ import SuccessPage from "./pages/payment/SuccessPage";
 import FailPage from "./pages/payment/FailPage";
 import CardRegistration from "./pages/payment/CardRegistration";
 import AutoPaymentSetting from "./pages/payment/AutoPaymentSetting";
-import AutoPaymentInfo from "./pages/mypage/AutoPaymentInfo"; 
+import AutoPaymentInfo from "./pages/mypage/AutoPaymentInfo";
 
-//이유진
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,10 +38,6 @@ const router = createBrowserRouter([
       // 2차인증 otp 번호 입력 페이지
       { path: "/otp", element: <Totp /> },
 
-      // 카카오 OAuth 리다이렉트 핸들러 (보호 필요 없음)
-      { path: "/login/oauth2/code/kakao", element: <OAuth2RedirectHandler /> },
-
-      // 마이페이지
       { path: "/mypage/*", element: <Mypage /> },
       
       // 보험 상세 페이지
@@ -52,6 +47,9 @@ const router = createBrowserRouter([
       { path: "/product/enrollment", element: <ProductEnrollment /> },
       
       // 결제 성공 페이지 
+      { path: "/product/:id/enrollment", element: <ProductEnrollment /> },
+
+      // 성공 페이지
       { path: "/successPage", element: <SuccessPage /> },
       
       // 결제 실패 페이지 
@@ -62,7 +60,7 @@ const router = createBrowserRouter([
       
       // 보험 추천 페이지
       { path: "/recommend", element: <Recommend /> },
-      
+  
       // 여기서 productId를 받아서 결제 진행
       { path: "/payment/:productId", element: <Payment /> },
       
@@ -72,7 +70,9 @@ const router = createBrowserRouter([
       //자동 결제 페이지
       { path: "/autoPaymentSetting", element: <AutoPaymentSetting /> },
 
-    ], 
+      // 동의 페이지
+      { path: "/agreement/:id", element: <Agreement /> },
+    ],
     errorElement: <NotFound />,
   },
 ]);

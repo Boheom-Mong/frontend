@@ -3,6 +3,26 @@ import { useNavigate } from "react-router-dom";
 import * as S from "./style";
 import { useUserHealthStore } from "../../store/useUserHeatlhStore";
 
+// Java 파일(ChronicDisease.java)에 나열된 질환 목록(한글 명칭)
+const chronicDiseaseList = [
+  "고혈압",
+  "당뇨",
+  "고지혈증",
+  "천식",
+  "관절염",
+  "뇌졸중",
+  "협심증",
+  "암",
+  "간염",
+  "심부전",
+  "편두통",
+  "골다공증",
+  "COPD",
+  "간경화",
+  "만성신장질환",
+  "갑상선질환",
+];
+
 // 직업 한글 목록, Enum 매핑
 const jobTypes = ["사무직", "배달", "건설", "자영업", "학생", "무직"];
 const jobTypeMap = {
@@ -18,7 +38,7 @@ const HealthInfo = () => {
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState("");
 
-  // 1) 폼 상태
+  // 폼 상태
   const [info, setInfo] = useState({
     age: "",
     gender: "",
@@ -28,17 +48,18 @@ const HealthInfo = () => {
     bloodSugarLevel: "",
     isSmoking: false,
     isDrinking: false,
-    chronicDiseases: [],
+    chronicDiseases: [], // 로컬에서 만성질환 배열 관리
     jobType: "",
     hasChildren: false,
     hasOwnHouse: false,
     hasPet: false,
     hasFamilyHistory: false,
+    surgeryCount: "0",
   });
 
   const { postUserHealthInfo } = useUserHealthStore();
 
-  // 3) 필수 항목 검사
+  // 필수 항목 검사
   const validateRequired = () => {
     if (!info.age || !info.gender || !info.height || !info.weight) {
       setErrorMsg("기본 정보(나이, 성별, 키, 몸무게)는 필수입니다.");
@@ -47,7 +68,7 @@ const HealthInfo = () => {
     return true;
   };
 
-  // 4) 입력 변경 핸들러
+  // 입력 변경 핸들러
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -61,7 +82,7 @@ const HealthInfo = () => {
             : prev.chronicDiseases.filter((d) => d !== value),
         }));
       } else {
-        // 단일 체크박스
+        // 단일 체크박스 (흡연, 음주, hasChildren 등)
         setInfo((prev) => ({ ...prev, [name]: checked }));
       }
     } else {
@@ -70,7 +91,7 @@ const HealthInfo = () => {
     }
   };
 
-  // 5) BMI 계산
+  // BMI 계산
   const calcBMI = () => {
     const h = Number(info.height);
     const w = Number(info.weight);
@@ -79,7 +100,7 @@ const HealthInfo = () => {
     return Number((w / (m * m)).toFixed(1));
   };
 
-  // 6) 폼 제출
+  // 폼 제출 (POST)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
@@ -93,6 +114,7 @@ const HealthInfo = () => {
     const bsValue =
       info.bloodSugarLevel === "" ? null : Number(info.bloodSugarLevel);
 
+    // === 만성질환 배열을 백엔드가 'chronicDiseaseList'로 받는다고 가정 ===
     const payload = {
       age: Number(info.age),
       gender: info.gender,
@@ -103,16 +125,18 @@ const HealthInfo = () => {
       bloodSugarLevel: bsValue,
       isSmoker: info.isSmoking,
       isDrinker: info.isDrinking,
-      chronicDiseases: info.chronicDiseases,
+      chronicDiseaseList: info.chronicDiseases, // 만성질환 배열 전송
       jobType: convertedJobType,
       hasChildren: info.hasChildren,
       hasOwnHouse: info.hasOwnHouse,
       hasPet: info.hasPet,
       hasFamilyHistory: info.hasFamilyHistory,
+      surgeryCount: Number(info.surgeryCount),
     };
 
     try {
       await postUserHealthInfo(payload);
+      // 성공 시 이동
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -120,7 +144,6 @@ const HealthInfo = () => {
     }
   };
 
-  // UI 렌더
   return (
     <S.Form onSubmit={handleSubmit}>
       {errorMsg && <S.ErrorMsg>{errorMsg}</S.ErrorMsg>}
@@ -128,11 +151,15 @@ const HealthInfo = () => {
       <S.TwoColumnWrapper>
         {/* 좌측 컬럼 */}
         <S.Column>
+          {/* (1) 기본 정보 섹션 */}
           <S.Section>
             <S.SectionTitle>기본 정보</S.SectionTitle>
             <S.Grid>
               <S.InputGroup>
-                <label>나이*</label>
+                {/* 필수 항목 *를 빨간색으로 표시 */}
+                <label>
+                  나이<span style={{ color: "red" }}>*</span>
+                </label>
                 <S.Input
                   type="number"
                   name="age"
@@ -141,7 +168,9 @@ const HealthInfo = () => {
                 />
               </S.InputGroup>
               <S.InputGroup>
-                <label>성별*</label>
+                <label>
+                  성별<span style={{ color: "red" }}>*</span>
+                </label>
                 <div>
                   <label>
                     <input
@@ -166,7 +195,9 @@ const HealthInfo = () => {
                 </div>
               </S.InputGroup>
               <S.InputGroup>
-                <label>키(cm)*</label>
+                <label>
+                  키(cm)<span style={{ color: "red" }}>*</span>
+                </label>
                 <S.Input
                   type="number"
                   name="height"
@@ -175,7 +206,9 @@ const HealthInfo = () => {
                 />
               </S.InputGroup>
               <S.InputGroup>
-                <label>몸무게(kg)*</label>
+                <label>
+                  몸무게(kg)<span style={{ color: "red" }}>*</span>
+                </label>
                 <S.Input
                   type="number"
                   name="weight"
@@ -190,6 +223,7 @@ const HealthInfo = () => {
             </S.Grid>
           </S.Section>
 
+          {/* (2) 건강 상태 섹션 */}
           <S.Section>
             <S.SectionTitle>건강 상태</S.SectionTitle>
             <S.Grid>
@@ -223,37 +257,54 @@ const HealthInfo = () => {
                 </S.Select>
               </S.InputGroup>
             </S.Grid>
+            <S.Grid>
+              <S.InputGroup>
+                <label>수술횟수</label>
+                <S.Select
+                  name="surgeryCount"
+                  value={info.surgeryCount}
+                  onChange={handleChange}
+                >
+                  {Array.from({ length: 6 }, (_, i) => (
+                    <option key={i} value={i}>
+                      {i}회
+                    </option>
+                  ))}
+                </S.Select>
+              </S.InputGroup>
 
-            <S.CheckboxSection>
-              <label>
-                <input
-                  type="checkbox"
-                  name="isSmoking"
-                  checked={info.isSmoking}
-                  onChange={handleChange}
-                />
-                흡연
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="isDrinking"
-                  checked={info.isDrinking}
-                  onChange={handleChange}
-                />
-                음주
-              </label>
-            </S.CheckboxSection>
+              <S.CheckboxSection>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="isSmoking"
+                    checked={info.isSmoking}
+                    onChange={handleChange}
+                  />
+                  흡연
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="isDrinking"
+                    checked={info.isDrinking}
+                    onChange={handleChange}
+                  />
+                  음주
+                </label>
+              </S.CheckboxSection>
+            </S.Grid>
           </S.Section>
         </S.Column>
 
         {/* 우측 컬럼 */}
         <S.Column>
+          {/* (3) 만성질환 */}
           <S.Section>
             <S.SectionTitle>만성질환</S.SectionTitle>
             <S.ChronicDiseaseGrid>
-              {["고혈압", "당뇨", "고지혈증", "천식", "암"].map((disease) => (
-                <label key={disease}>
+              {chronicDiseaseList.map((disease) => (
+                <S.DiseaseLabel key={disease}>
                   <input
                     type="checkbox"
                     name="chronicDiseases"
@@ -262,11 +313,12 @@ const HealthInfo = () => {
                     onChange={handleChange}
                   />
                   {disease}
-                </label>
+                </S.DiseaseLabel>
               ))}
             </S.ChronicDiseaseGrid>
           </S.Section>
 
+          {/* (4) 직업 */}
           <S.Section>
             <S.SectionTitle>직업</S.SectionTitle>
             <S.RadioGroup>
@@ -285,6 +337,7 @@ const HealthInfo = () => {
             </S.RadioGroup>
           </S.Section>
 
+          {/* (5) 생활 정보 */}
           <S.Section>
             <S.SectionTitle>생활 정보</S.SectionTitle>
             <S.CheckboxSection>

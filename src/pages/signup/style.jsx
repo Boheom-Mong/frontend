@@ -128,8 +128,9 @@ export const InputGroup = styled.div`
   flex-direction: column;
   label {
     font-weight: bold;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
   }
+  margin-bottom: 15px;
 `;
 
 export const Input = styled.input`
@@ -158,16 +159,45 @@ export const RadioGroup = styled.div`
 `;
 
 export const ChronicDiseaseGrid = styled.div`
+  /* 1) 3열 그리드 예시 */
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 12px;
+  column-gap: 16px;
+
+  /* 
+    혹은 항목 개수에 따라 가변적인 열 배치를 원하면
+    repeat(auto-fill, minmax(120px, 1fr)) 처럼도 가능 
+  */
+  /* 
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px 16px;
+  */
+`;
+
+export const DiseaseLabel = styled.label`
+  display: flex;
+  align-items: center;
   gap: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+
+  /* 체크박스 자체를 커스터마이징하고 싶다면 추가 */
+  input[type="checkbox"] {
+    /* accent-color가 지원되는 브라우저에서 체크 색상 지정 가능 */
+    accent-color: #4169e1;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
 `;
 
 export const CheckboxSection = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 30px;
 `;
 
 export const SubmitButton = styled.button`
