@@ -1,6 +1,6 @@
 // store/useInsuranceProductStore.js (또는 .jsx)
 import { create } from "zustand";
-import qs from "qs"; 
+import qs from "qs";
 import API from ".";
 
 const useInsuranceProductStore = create((set, get) => ({
@@ -44,11 +44,12 @@ const useInsuranceProductStore = create((set, get) => ({
 
       const response = await API.get("/insurance-products/search", {
         params: {
-          page,      // 1-based 페이지
+          page, // 1-based 페이지
           size: 9,
         },
         paramsSerializer: {
-          serialize: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
+          serialize: (params) =>
+            qs.stringify(params, { arrayFormat: "repeat" }),
         },
       });
 
@@ -82,7 +83,8 @@ const useInsuranceProductStore = create((set, get) => ({
           categories: selectedCategories,
         },
         paramsSerializer: {
-          serialize: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
+          serialize: (params) =>
+            qs.stringify(params, { arrayFormat: "repeat" }),
         },
       });
 
@@ -104,6 +106,23 @@ const useInsuranceProductStore = create((set, get) => ({
     const { insuranceProducts } = get();
     // 로컬에 저장된 상품 배열(insuranceProducts)에서 해당 productId를 찾아 반환
     return insuranceProducts.find((item) => item.productId === productId);
+  },
+
+  // 서버에서 특정 상품을 가져와 스토어에 저장하는 함수
+  fetchInsuranceById: async (id) => {
+    try {
+      const response = await API.get(`/insurance-products/${id}`);
+      const fetchedProduct = response.data.result;
+
+      set((state) => ({
+        insurances: [...state.insuranceProducts, fetchedProduct],
+      }));
+
+      return fetchedProduct;
+    } catch (error) {
+      console.error("fetchInsuranceById error:", error);
+      throw error;
+    }
   },
 }));
 
