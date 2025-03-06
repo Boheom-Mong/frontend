@@ -1,43 +1,44 @@
-import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
+import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useEffect, useState } from "react";
-import * as S from "./style"; 
+import { useParams } from "react-router-dom";
+import * as S from "./style";
 
+import { BillingAuth } from "./BillingAuth"; 
 import { useAuthStore } from "../../store/useAuthStore";
+import useInsuranceProductStore from "../../store/useInsuranceProductStore";
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "tf5VUpqFDTAk-MVoQ9Ahj";
 
-export function payment() {
+export function Payment() {
+  const [ready, setReady] = useState(false);
+  const [widgets, setWidgets] = useState(null);
+
   const [amount, setAmount] = useState({
     currency: "KRW",
     value: 50_000,
   });
-  const [ready, setReady] = useState(false);
-  const [widgets, setWidgets] = useState(null);
+
+  const { getInsuranceProductDetail, selectedInsurance, loading, error } =
+    useInsuranceProductStore();
+
+  const { isLoggedIn, user, fetchUserInfo } = useAuthStore();
+
+  const { productId } = useParams();
 
   useEffect(() => {
-    async function fetchPaymentWidgets() {
-      // ------  결제위젯 초기화 ------
+    async function initPaymentWidgets() {
       const tossPayments = await loadTossPayments(clientKey);
-      const widgets = tossPayments.widgets({
-        customerKey,
-      });
-
-      setWidgets(widgets);
+      const w = tossPayments.widgets({ customerKey });
+      setWidgets(w);
     }
-
-    fetchPaymentWidgets();
+    initPaymentWidgets();
   }, []);
 
   useEffect(() => {
-    async function renderPaymentWidgets() {
-      if (!widgets) {
-        return;
-      }
-      // ------ 주문의 결제 금액 설정 ------
+    if (!widgets) return;
+    async function renderWidgets() {
       await widgets.setAmount(amount);
-
-      // ------ UI 렌더링 ------
       await Promise.all([
         widgets.renderPaymentMethods({
           selector: "#payment-method",
@@ -48,68 +49,73 @@ export function payment() {
           variantKey: "AGREEMENT",
         }),
       ]);
-
       setReady(true);
     }
-
-    renderPaymentWidgets();
-  }, [widgets]);
-
-  useEffect(() => {
-    if (widgets) {
-      widgets.setAmount(amount);
-    }
+    renderWidgets();
   }, [widgets, amount]);
 
-  const { isLoggedIn, user, fetchUserInfo } = useAuthStore();
-
-  // 로그인되어 있고 아직 user 정보가 없으면 fetchUserInfo 호출
   useEffect(() => {
-    console.log("user정보", user);
+    if (productId) {
+      getInsuranceProductDetail(productId);
+    }
+  }, [productId, getInsuranceProductDetail]);
+
+  useEffect(() => {
+    if (!selectedInsurance) return;
+    setAmount((prev) => ({
+      ...prev,
+      value: selectedInsurance.monthlyPremium || 50000,
+    }));
+  }, [selectedInsurance]);
+
+  useEffect(() => {
     if (isLoggedIn && !user) {
       fetchUserInfo();
     }
   }, [isLoggedIn, user, fetchUserInfo]);
 
-  // 아직 로그인되지 않았거나 user 정보를 못 가져온 상황 처리
   if (!isLoggedIn) {
     return <div>로그인 정보가 없습니다.</div>;
   }
   if (!user) {
     return <div>로그인 정보를 가져오는 중...</div>;
   }
+  if (loading) {
+    return <div>상품 상세정보 불러오는 중...</div>;
+  }
+  if (error) {
+    return <div>오류 발생: {error}</div>;
+  }
 
-  // 결제하기 버튼 핸들러
   const handlePaymentClick = async () => {
     try {
-      const random = new Date().getTime() + Math.random();
-      const randomId = btoa(random.toString());
+      const randomId = btoa(`${Date.now()}-${Math.random()}`);
+
       await widgets.requestPayment({
         orderId: randomId,
-        orderName: "정기결제 테스트",
+        orderName: selectedInsurance
+          ? `${selectedInsurance.productName}`
+          : `상품ID: ${productId || "없음"}`,
         successUrl: window.location.origin + "/successPage",
         failUrl: window.location.origin + "/failPage",
-        customerEmail: user?.loginEmail,
-        customerName: user?.name,
+        customerEmail: user?.loginEmail || "",
+        customerName: user?.name || "",
         customerMobilePhone: "01012345678",
       });
-    } catch (error) {
-      
-      alert(error);
+    } catch (err) {
+      alert(err);
     }
   };
 
   return (
     <S.Wrapper>
       <S.BoxSection>
-        {/* 이용약관 UI */}
         <div id="agreement" />
-
-        {/* 결제 UI */}
         <div id="payment-method" />
       </S.BoxSection>
 
-      {/* 결제하기 버튼 */}
+      <BillingAuth />
+
       <S.PaymentButton disabled={!ready} onClick={handlePaymentClick}>
         결제하기
       </S.PaymentButton>
@@ -117,4 +123,4 @@ export function payment() {
   );
 }
 
-export default payment;
+export default Payment;

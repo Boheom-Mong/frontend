@@ -11,11 +11,14 @@ import ProductDetail from "./pages/product/detail/index";
 import ProductEnrollment from "./pages/product/enrollment/index";
 import NotFound from "./NotFound";
 import OAuth2RedirectHandler from "./pages/login/kakao/OAuth2RedirectHandler";
+import Payment from "./pages/payment/payment";
 import SuccessPage from "./pages/payment/SuccessPage";
 import FailPage from "./pages/payment/FailPage";
-import Payment from "./pages/payment/payment";
+import CardRegistration from "./pages/payment/CardRegistration";
+import AutoPaymentSetting from "./pages/payment/AutoPaymentSetting";
+import AutoPaymentInfo from "./pages/mypage/AutoPaymentInfo"; 
 
-// 이유진
+//이유진
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,27 +42,37 @@ const router = createBrowserRouter([
       // 카카오 OAuth 리다이렉트 핸들러 (보호 필요 없음)
       { path: "/login/oauth2/code/kakao", element: <OAuth2RedirectHandler /> },
 
-      // 마이 페이지
+      // 마이페이지
       { path: "/mypage/*", element: <Mypage /> },
-
+      
       // 보험 상세 페이지
       { path: "/product/:id", element: <ProductDetail /> },
-
+      
       // 보험 가입 페이지
       { path: "/product/enrollment", element: <ProductEnrollment /> },
-
-      // 성공 페이지
+      
+      // 결제 성공 페이지 
       { path: "/successPage", element: <SuccessPage /> },
-
-      // 실패 페이지
+      
+      // 결제 실패 페이지 
       { path: "/failPage", element: <FailPage /> },
 
-      // 실패 페이지
+      // 결제 페이지
       { path: "/payment", element: <Payment /> },
-
+      
       // 보험 추천 페이지
       { path: "/recommend", element: <Recommend /> },
-    ],
+      
+      // 여기서 productId를 받아서 결제 진행
+      { path: "/payment/:productId", element: <Payment /> },
+      
+      // 카드 등록 성공 후 이동할 페이지
+      { path: "/cardRegistration", element: <CardRegistration /> },
+      
+      //자동 결제 페이지
+      { path: "/autoPaymentSetting", element: <AutoPaymentSetting /> },
+
+    ], 
     errorElement: <NotFound />,
   },
 ]);

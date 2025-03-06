@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import * as S from "./style"; // 위에서 만든 style.js 파일 import
+import * as S from "./style"; 
 
 export function SuccessPage() {
   const navigate = useNavigate();
