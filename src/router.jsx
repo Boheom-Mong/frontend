@@ -8,9 +8,9 @@ import Signup from "./pages/signup/index";
 import Mypage from "./pages/mypage/index";
 import Recommend from "./pages/recommend/index";
 import ProductDetail from "./pages/product/detail/index";
+import Agreement from "./pages/product/agreement/index";
 import ProductEnrollment from "./pages/product/enrollment/index";
 import NotFound from "./NotFound";
-import OAuth2RedirectHandler from "./pages/login/kakao/OAuth2RedirectHandler";
 import Payment from "./pages/payment/payment";
 import SuccessPage from "./pages/payment/SuccessPage";
 import FailPage from "./pages/payment/FailPage";
@@ -69,6 +69,9 @@ const router = createBrowserRouter([
       
       //자동 결제 페이지
       { path: "/autoPaymentSetting", element: <AutoPaymentSetting /> },
+      
+      //자동 결제 페이지
+      { path: "/autoPaymentInfo", element: <AutoPaymentInfo /> },
 
       // 동의 페이지
       { path: "/agreement/:id", element: <Agreement /> },

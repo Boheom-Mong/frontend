@@ -3,7 +3,6 @@ import axios from "axios";
 
 function AutoPaymentInfo() {
   const [autoPayments, setAutoPayments] = useState([]);
-  // 수정용 상태
   const [editingId, setEditingId] = useState(null); 
   const [editDayOfMonth, setEditDayOfMonth] = useState("");
   const [editTime, setEditTime] = useState("");
