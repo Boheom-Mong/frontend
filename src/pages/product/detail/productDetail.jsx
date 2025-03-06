@@ -1,60 +1,57 @@
 import { useNavigate, useParams } from "react-router-dom";
-import * as S from "./style";  // 스타일
-import { Shield, DollarSign, FileText, Phone } from 'lucide-react';
+import * as S from "./style"; // 스타일
+import { Shield, DollarSign, FileText, Phone } from "lucide-react";
 import useInsuranceProductStore from "../../../store/useInsuranceProductStore";
 import insuranceDetailsData from "../../../data/insuranceDetailsData";
-import { useEffect } from "react";
-
-const insuranceCategories = [
-  { value: "CANCER", label: "암보험" },
-  { value: "SURGERY", label: "수술/입원" },
-  { value: "LIFE", label: "종신보험" },
-  { value: "DRIVER", label: "운전자/상해" },
-  { value: "FIRE", label: "주택화재" },
-  { value: "DENTAL", label: "치아" },
-  { value: "DEMENTIA", label: "치매" },
-  { value: "NEWBORN", label: "신생아" },
-  { value: "HEALTHCARE", label: "실손의료" },
-  { value: "CHILD", label: "어린이보험" },
-  { value: "PET", label: "반려동물보험" },
-  { value: "NURSING", label: "간병보험" },
-  { value: "TRAVEL", label: "여행자보험" },
-  { value: "ETC", label: "기타보험" },
-];
-
-function getCategoryLabel(categoryValue) {
-  const found = insuranceCategories.find((cat) => cat.value === categoryValue);
-  return found ? found.label : "카테고리";
-}
+import { useEffect, useState } from "react";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const productId = Number(id);
+  const [insurance, setInsurance] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const { fetchInsuranceById } = useInsuranceProductStore();
+  console.log(productId);
 
   useEffect(() => {
-    // 페이지가 마운트될 때 최상단으로 스크롤
-    window.scrollTo(0, 0);
-  }, []);
+    (async () => {
+      try {
+        const fetchedInsurance = await fetchInsuranceById(productId);
+        setInsurance(fetchedInsurance);
+        console.log(productId);
+      } catch (error) {
+        console.error("보험 상품을 불러오는 중 에러:", error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [productId, fetchInsuranceById]);
 
-  const { findInsuranceById } = useInsuranceProductStore();
-  const insurance = findInsuranceById(productId);
+  if (loading) {
+    return <div>상품 정보를 불러오는 중입니다...</div>;
+  }
 
   if (!insurance) {
     return (
       <S.Wrapper>
-        <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>상품을 찾을 수 없습니다.</h2>
-          <p style={{ color: '#666', marginBottom: '2rem' }}>요청하신 보험 상품 정보를 찾을 수 없습니다.</p>
-          <button 
-            onClick={() => navigate('/')} 
-            style={{ 
-              padding: '0.75rem 1.5rem', 
-              background: '#4169e1', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '8px', 
-              cursor: 'pointer' 
+        <div style={{ textAlign: "center", padding: "4rem 2rem" }}>
+          <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
+            상품을 찾을 수 없습니다.
+          </h2>
+          <p style={{ color: "#666", marginBottom: "2rem" }}>
+            요청하신 보험 상품 정보를 찾을 수 없습니다.
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            style={{
+              padding: "0.75rem 1.5rem",
+              background: "#4169e1",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
             }}
           >
             홈으로 돌아가기
@@ -86,7 +83,7 @@ const ProductDetail = () => {
       <S.Header>
         <S.CompanyName>{insurance.companyName}</S.CompanyName>
         <S.ProductName>{insurance.productName}</S.ProductName>
-        <S.CategoryTag>{getCategoryLabel(insurance.productCategory)}</S.CategoryTag>
+        <S.CategoryTag>{insurance.productCategory || "카테고리"}</S.CategoryTag>
       </S.Header>
 
       <S.Content>
@@ -104,25 +101,28 @@ const ProductDetail = () => {
           {randomDetail && (
             <S.DetailSection>
               <S.SectionTitle>상품 상세 정보</S.SectionTitle>
-              
+
               <S.InfoBlockContainer>
                 {/* 보장 내용 블록 */}
                 <S.InfoBlock>
                   <S.InfoBlockTitle>
-                    <Shield size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    <Shield
+                      size={18}
+                      style={{ marginRight: "8px", verticalAlign: "middle" }}
+                    />
                     보장 내용
                   </S.InfoBlockTitle>
-                  
+
                   <S.InfoBlockText>
                     <strong>보장금액</strong>
                     <span>{randomDetail.coverage.guaranteeAmount}</span>
                   </S.InfoBlockText>
-                  
+
                   <S.InfoBlockText>
                     <strong>제외사항</strong>
                     <span>{randomDetail.coverage.exclusions}</span>
                   </S.InfoBlockText>
-                  
+
                   <S.InfoBlockText>
                     <strong>특약</strong>
                     <span>{randomDetail.coverage.specialClauses}</span>
@@ -132,25 +132,28 @@ const ProductDetail = () => {
                 {/* 보험료 정보 블록 */}
                 <S.InfoBlock>
                   <S.InfoBlockTitle>
-                    <DollarSign size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    <DollarSign
+                      size={18}
+                      style={{ marginRight: "8px", verticalAlign: "middle" }}
+                    />
                     보험료 정보
                   </S.InfoBlockTitle>
-                  
+
                   <S.InfoBlockText>
                     <strong>예시</strong>
                     <span>{randomDetail.premiumDetails.planExamples}</span>
                   </S.InfoBlockText>
-                  
+
                   <S.InfoBlockText>
                     <strong>납입주기</strong>
                     <span>{randomDetail.premiumDetails.paymentCycle}</span>
                   </S.InfoBlockText>
-                  
+
                   <S.InfoBlockText>
                     <strong>면제조건</strong>
                     <span>{randomDetail.premiumDetails.waiverCondition}</span>
                   </S.InfoBlockText>
-                  
+
                   <S.InfoBlockText>
                     <strong>환급형태</strong>
                     <span>{randomDetail.premiumDetails.refundType}</span>
@@ -160,32 +163,43 @@ const ProductDetail = () => {
                 {/* 가입 안내 블록 */}
                 <S.InfoBlock>
                   <S.InfoBlockTitle>
-                    <FileText size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    <FileText
+                      size={18}
+                      style={{ marginRight: "8px", verticalAlign: "middle" }}
+                    />
                     가입 안내
                   </S.InfoBlockTitle>
-                  
+
                   <S.InfoBlockText>
                     <strong>온라인 가입</strong>
-                    <span>{randomDetail.applicationProcess.onlinePossible ? "가능" : "불가"}</span>
+                    <span>
+                      {randomDetail.applicationProcess.onlinePossible
+                        ? "가능"
+                        : "불가"}
+                    </span>
                   </S.InfoBlockText>
-                  
+
                   <S.InfoBlockText>
                     <strong>콜센터</strong>
                     <span>{randomDetail.applicationProcess.callCenter}</span>
                   </S.InfoBlockText>
-                  
+
                   <S.InfoBlockText>
                     <strong>대면 상담</strong>
-                    <span>{randomDetail.applicationProcess.faceToFaceConsult}</span>
+                    <span>
+                      {randomDetail.applicationProcess.faceToFaceConsult}
+                    </span>
                   </S.InfoBlockText>
-                  
+
                   <S.InfoBlockText>
                     <strong>필요 서류</strong>
-                    <span>{randomDetail.applicationProcess.neededDocuments}</span>
+                    <span>
+                      {randomDetail.applicationProcess.neededDocuments}
+                    </span>
                   </S.InfoBlockText>
                 </S.InfoBlock>
               </S.InfoBlockContainer>
-              
+
               {/* 추가 정보 박스 */}
               <S.ExtraBox>
                 <S.FeatureList>
