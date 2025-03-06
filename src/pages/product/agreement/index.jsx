@@ -28,6 +28,11 @@ const Agreement = () => {
     section3: true,
   });
 
+  useEffect(() => {
+    // 페이지가 마운트될 때 최상단으로 스크롤
+    window.scrollTo(0, 0);
+  }, []);
+
   // 전체 동의 처리
   useEffect(() => {
     const { all, ...rest } = agreements;
