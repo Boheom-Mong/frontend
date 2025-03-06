@@ -66,7 +66,16 @@ export const RiskFactorTag = styled.span`
   font-size: 1rem;
   font-weight: 500;
   display: inline-block;
-`;
+  box-shadow: 0 2px 4px rgba(65, 105, 225, 0.2);
+  transition: all 0.2s ease;
+  border: 1px solid rgba(65, 105, 225, 0.2);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(65, 105, 225, 0.3);
+    background-color: #d6ebff;
+  }
+`
 
 export const RecommendationSection = styled.section`
   margin-bottom: 3rem;

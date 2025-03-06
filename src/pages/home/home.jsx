@@ -13,7 +13,7 @@ const insuranceCategories = [
   { value: "DENTAL", label: "치아" },
   { value: "DEMENTIA", label: "치매" },
   { value: "NEWBORN", label: "신생아" },
-  { value: "HEALTHCARE", label: "실손의료비" },
+  { value: "HEALTHCARE", label: "실손의료" },
   { value: "CHILD", label: "어린이보험" },
   { value: "PET", label: "반려동물보험" },
   { value: "NURSING", label: "간병보험" },

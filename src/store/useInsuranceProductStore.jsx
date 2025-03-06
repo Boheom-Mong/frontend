@@ -99,12 +99,7 @@ const useInsuranceProductStore = create((set, get) => ({
       set({ error: err.message, loading: false });
     }
   },
-  // (5) ★ 추가: ID로 상품 찾기
-  findInsuranceById: (productId) => {
-    const { insuranceProducts } = get();
-    // 로컬에 저장된 상품 배열(insuranceProducts)에서 해당 productId를 찾아 반환
-    return insuranceProducts.find((item) => item.productId === productId);
-  },
+     
 }));
 
 export default useInsuranceProductStore;

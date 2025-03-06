@@ -3,11 +3,39 @@ import * as S from "./style";  // 스타일
 import { Shield, DollarSign, FileText, Phone } from 'lucide-react';
 import useInsuranceProductStore from "../../../store/useInsuranceProductStore";
 import insuranceDetailsData from "../../../data/insuranceDetailsData";
+import { useEffect } from "react";
+
+const insuranceCategories = [
+  { value: "CANCER", label: "암보험" },
+  { value: "SURGERY", label: "수술/입원" },
+  { value: "LIFE", label: "종신보험" },
+  { value: "DRIVER", label: "운전자/상해" },
+  { value: "FIRE", label: "주택화재" },
+  { value: "DENTAL", label: "치아" },
+  { value: "DEMENTIA", label: "치매" },
+  { value: "NEWBORN", label: "신생아" },
+  { value: "HEALTHCARE", label: "실손의료" },
+  { value: "CHILD", label: "어린이보험" },
+  { value: "PET", label: "반려동물보험" },
+  { value: "NURSING", label: "간병보험" },
+  { value: "TRAVEL", label: "여행자보험" },
+  { value: "ETC", label: "기타보험" },
+];
+
+function getCategoryLabel(categoryValue) {
+  const found = insuranceCategories.find((cat) => cat.value === categoryValue);
+  return found ? found.label : "카테고리";
+}
 
 const ProductDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const productId = Number(id);
+
+  useEffect(() => {
+    // 페이지가 마운트될 때 최상단으로 스크롤
+    window.scrollTo(0, 0);
+  }, []);
 
   const { findInsuranceById } = useInsuranceProductStore();
   const insurance = findInsuranceById(productId);
@@ -58,7 +86,7 @@ const ProductDetail = () => {
       <S.Header>
         <S.CompanyName>{insurance.companyName}</S.CompanyName>
         <S.ProductName>{insurance.productName}</S.ProductName>
-        <S.CategoryTag>{insurance.productCategory || "카테고리"}</S.CategoryTag>
+        <S.CategoryTag>{getCategoryLabel(insurance.productCategory)}</S.CategoryTag>
       </S.Header>
 
       <S.Content>
