@@ -14,7 +14,7 @@ const categoryMap = {
   DENTAL: "치아",
   DEMENTIA: "치매",
   NEWBORN: "신생아",
-  HEALTHCARE: "실손의료비",
+  HEALTHCARE: "실손의료",
   CHILD: "어린이보험",
   PET: "반려동물보험",
   NURSING: "간병보험",

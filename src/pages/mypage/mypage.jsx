@@ -5,6 +5,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 import UserInfo from "./userInfo";
 import MyInsurance from "./myInsurance";
 import HealthInfo from "./healthInfo";
+import AutoPaymentInfo from "./AutoPaymentInfo";
 
 const Mypage = () => {
   const { isLoggedIn, user, fetchUserInfo } = useAuthStore();
@@ -72,6 +73,14 @@ const Mypage = () => {
               북마크
             </NavLink>
           </S.NavItem>
+          <S.NavItem>
+            <NavLink
+              to="/mypage/autoPayment"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              자동 결제 일정
+            </NavLink>
+          </S.NavItem>
         </S.Nav>
       </S.Sidebar>
 
@@ -81,6 +90,7 @@ const Mypage = () => {
           <Route path="/" element={<UserInfo user={user} />} />
           <Route path="/health" element={<HealthInfo />} />
           <Route path="/insurance" element={<MyInsurance />} />
+          <Route path="/autoPayment" element={<AutoPaymentInfo />} />
         </Routes>
       </S.Content>
     </S.Wrapper>

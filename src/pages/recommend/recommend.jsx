@@ -109,12 +109,15 @@ const Recommend = () => {
             {recommendedData.globalIntro}
           </S.AnalysisText>
 
-          {/* 위험 요소 태그들 (예: 음주습관, 자가주택 보유 등) */}
+          {/* 여기는 위험 요소들만 따로 디자인 */}
           <S.RiskFactorTags>
-            {(recommendedData.riskFactors || []).map((factor) => (
-              <S.RiskFactorTag key={factor}>{factor}</S.RiskFactorTag>
+            {recommendedData.riskFactors.map((factor) => (
+              <S.RiskFactorTag key={factor}>
+                {factor}
+              </S.RiskFactorTag>
             ))}
           </S.RiskFactorTags>
+
         </S.AnalysisContent>
       </S.AnalysisSection>
 
