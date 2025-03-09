@@ -1,3 +1,5 @@
+// style.js
+
 import styled from "styled-components";
 
 export const InsuranceCard = styled.div`
@@ -18,6 +20,20 @@ export const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+// 회사 로고 + 회사 이름을 나란히 배치할 컴포넌트
+export const CompanyInfo = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+// 로고 이미지 스타일
+export const CompanyLogo = styled.img`
+  width: 30px; // 가로 크기를 30px 고정
+  height: 30px; // 세로 크기를 30px 고정
+  object-fit: contain; // 이미지 비율을 유지하며 영역에 맞춤
+  margin-right: 8px;
 `;
 
 export const CompanyName = styled.span`

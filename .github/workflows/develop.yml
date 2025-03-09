@@ -14,6 +14,8 @@ jobs:
     env:
       VITE_APP_API_URL: ${{ secrets.VITE_APP_API_URL }}
       VITE_APP_KAKAO_URL: ${{ secrets.VITE_APP_KAKAO_URL }}
+      VITE_APP_TOSS_CLIENT_KEY: ${{ secrets.VITE_APP_TOSS_CLIENT_KEY }}
+      VITE_APP_S3_URL: ${{ secrets.VITE_APP_S3_URL }}
 
     steps:
       # (1) GitHub 레포지토리 checkout
@@ -52,7 +54,7 @@ jobs:
           host: ${{ secrets.REMOTE_IP }}
           username: ubuntu
           key: ${{ secrets.REMOTE_PRIVATE_KEY }}
-          envs: VITE_APP_API_URL, VITE_APP_KAKAO_URL
+          envs: VITE_APP_API_URL, VITE_APP_KAKAO_URL, VITE_APP_TOSS_CLIENT_KEY, VITE_APP_S3_URL
           script_stop: true
           script: |
             echo "Remove old cache files if needed..."
