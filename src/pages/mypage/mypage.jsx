@@ -6,6 +6,7 @@ import UserInfo from "./userInfo";
 import MyInsurance from "./myInsurance";
 import HealthInfo from "./healthInfo";
 import AutoPaymentInfo from "./AutoPaymentInfo";
+import Bookmark from "./bookmark";
 
 const Mypage = () => {
   const { isLoggedIn, user, fetchUserInfo } = useAuthStore();
@@ -91,6 +92,7 @@ const Mypage = () => {
           <Route path="/health" element={<HealthInfo />} />
           <Route path="/insurance" element={<MyInsurance />} />
           <Route path="/autoPayment" element={<AutoPaymentInfo />} />
+          <Route path="/bookmark" element={<Bookmark />} />
         </Routes>
       </S.Content>
     </S.Wrapper>
