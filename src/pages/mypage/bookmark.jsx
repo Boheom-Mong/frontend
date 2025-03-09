@@ -2,6 +2,8 @@
 import React, { useEffect } from "react";
 import { useBookmarkStore } from "../../store/useBookmarkStore";
 import ProductCard from "../../components/ProductCard/ProductCard";
+import * as S from "./style";
+
 
 function Bookmark() {
   const {
@@ -26,15 +28,16 @@ function Bookmark() {
 
   // bookmarkDetailList는 [{ bookmarkId, productId, companyName, ...}, ...]
   return (
-    <div>
-      <h2>내 북마크 목록</h2>
+
+    <S.Section>
+      <S.SectionTitle>내 북마크 목록</S.SectionTitle>
       {bookmarkDetailList.map((item) => (
         <ProductCard 
           key={item.bookmarkId}
           insurance={item} // ProductCard는 { productId, companyName, ...}를 받음
         />
       ))}
-    </div>
+    </S.Section>
   );
 }
 
