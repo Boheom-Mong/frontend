@@ -3,13 +3,33 @@ import { create } from "zustand";
 import useInsuranceProductStore from "./useInsuranceProductStore";
 import API from ".";
 
-const useAutoPaymentStore = create((set, get) => ({
+const useAutoPaymentStore = create((set) => ({
   autoPayments: [],
 
-  // 자동결제 목록 가져오기 (productId → productName 병합)
-  fetchAutoPayments: async () => {
+  // 자동결제 신규 등록
+  createAutoPayment: async (payload) => {
     try {
-      const res = await API.get("/autoPayments");
+      const response = await API.post(`/autoPayments`, payload);
+      const createdItem = response.data;
+      // 서버에서 반환된 신규 아이템 데이터 예: { id, userId, productId, dayOfMonth, time, ... }
+
+      // (선택) 목록을 다시 불러오거나, 바로 state에 추가
+      // 방법 1) store의 autoPayments에 새 아이템 추가
+      set((state) => ({
+        autoPayments: [...state.autoPayments, createdItem],
+      }));
+
+      return createdItem; // 필요하면 반환
+    } catch (error) {
+      console.error("자동결제 등록 실패:", error);
+      throw error; // or return null
+    }
+  },
+
+  // 자동결제 목록 가져오기 (productId → productName 병합)
+  fetchAutoPayments: async (id) => {
+    try {
+      const res = await API.get(`/autoPayments/user/${id}`);
       const fetchedAutoPayments = res.data; // ex) [{ id, productId, ... }, ...]
 
       // 다른 store에 있는 fetchInsuranceById 함수

@@ -1,24 +1,30 @@
 // AutoPaymentInfo.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useAutoPaymentStore from "../../store/useAutoPaymentStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 function AutoPaymentInfo() {
   const [editingId, setEditingId] = useState(null);
   const [dayOfMonth, setDayOfMonth] = useState("");
   const [time, setTime] = useState("");
 
+  const { user } = useAuthStore();
+
+  const id = user?.userId;
+
   // zustand에서 필요한 상태/함수만 가져오기
   const {
-    autoPayments,         // 자동결제 목록 state
-    fetchAutoPayments,    // 목록 조회 함수
-    deleteAutoPayment,    // 삭제 함수
-    updateAutoPayment,    // 수정 함수
+    autoPayments, // 자동결제 목록 state
+    fetchAutoPayments, // 목록 조회 함수
+    deleteAutoPayment, // 삭제 함수
+    updateAutoPayment, // 수정 함수
   } = useAutoPaymentStore();
 
-  // 컴포넌트 마운트 시 목록 조회
   useEffect(() => {
-    fetchAutoPayments();
-  }, [fetchAutoPayments]);
+    if (id) {
+      fetchAutoPayments(id);
+    }
+  }, [id]);
 
   // 삭제 버튼 클릭 시 실행
   const handleDelete = async (id) => {
@@ -87,7 +93,10 @@ function AutoPaymentInfo() {
                   />
                 </p>
                 <button onClick={() => handleUpdate(item.id)}>저장</button>
-                <button onClick={handleCancelEdit} style={{ marginLeft: "8px" }}>
+                <button
+                  onClick={handleCancelEdit}
+                  style={{ marginLeft: "8px" }}
+                >
                   취소
                 </button>
               </div>
@@ -98,7 +107,10 @@ function AutoPaymentInfo() {
                 <p>결제일: 매월 {item.dayOfMonth}일</p>
                 <p>결제 시간: {item.time}</p>
                 <button onClick={() => handleEditClick(item)}>수정</button>
-                <button onClick={() => handleDelete(item.id)} style={{ marginLeft: "8px" }}>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  style={{ marginLeft: "8px" }}
+                >
                   삭제
                 </button>
               </>

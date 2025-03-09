@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate,useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import useAutoPaymentStore from "../../store/useAutoPaymentStore";
 
 function AutoPaymentSetting() {
   const navigate = useNavigate();
@@ -9,25 +9,28 @@ function AutoPaymentSetting() {
   const [time, setTime] = useState("09:00");
 
   const { productId } = useParams();
-  const numericProductId = Number(productId); // 문자열 → 숫자 변환
+  const numericProductId = Number(productId);
 
-  // 사용자
+  // 사용자 정보
   const { user } = useAuthStore();
+
+  // **Zustand 스토어**에서 가져오기
+  const { createAutoPayment } = useAutoPaymentStore();
 
   const handleSave = async () => {
     try {
       const userId = user?.userId;
-      const productId = numericProductId;
-      const response = await axios.post("http://localhost:8080/api/autoPayments", {
+      const payload = {
         userId,
-        productId,
+        productId: numericProductId,
         dayOfMonth,
         time,
-      });
+      };
 
-      // 2) 성공 응답 받으면 마이페이지로 이동 (혹은 응답 데이터 활용)
+      await createAutoPayment(payload);
+
       alert("자동 결제 스케줄이 저장되었습니다.");
-      navigate("/mypage/autoPayment"); // 마이페이지 자동결제 화면으로 이동
+      navigate("/mypage/autoPayment");
     } catch (error) {
       console.error(error);
       alert("서버 저장 중 오류가 발생했습니다.");
