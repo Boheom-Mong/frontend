@@ -20,19 +20,19 @@ export const SuccessWrapper = styled.div`
 export const SuccessBox = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;        
+  align-items: center;
   background-color: #ffffff;
   border: 1px solid #e5e5e5;
   border-radius: 8px;
   max-width: 480px;
   width: 100%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  padding: 40px 24px;         
+  padding: 40px 24px;
 
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #333;             
+    color: #333;
     margin-bottom: 8px;
   }
 
@@ -40,7 +40,7 @@ export const SuccessBox = styled.div`
     margin-bottom: 16px;
     font-size: 1rem;
     line-height: 1.4;
-    color: #666;            
+    color: #666;
   }
 `;
 
@@ -80,7 +80,6 @@ export const Header = styled.header`
   margin-bottom: 2.5rem;
   color: white;
   box-shadow: 0 10px 30px rgba(65, 105, 225, 0.2);
-
 `;
 
 export const CompanyName = styled.div`
@@ -98,7 +97,7 @@ export const ProductName = styled.h1`
   font-weight: 800;
   margin-bottom: 1.5rem;
   line-height: 1.2;
-  
+
   @media (max-width: 768px) {
     font-size: 2rem;
   }
@@ -124,7 +123,7 @@ export const Description = styled.p`
   color: #555;
   line-height: 1.6;
   margin-bottom: 2.5rem;
-  
+
   @media (max-width: 768px) {
     font-size: 1.1rem;
   }
@@ -142,9 +141,77 @@ export const MonthlyFee = styled.div`
     font-size: 2.5rem;
     font-weight: 700;
     color: #4169e1;
-    
+
     @media (max-width: 768px) {
       font-size: 2rem;
     }
+  }
+`;
+
+export const ContentSection = styled.div`
+  @media (max-width: 576px) {
+    padding: 1.5rem;
+  }
+`;
+
+export const CoverageCard = styled.div`
+  border-radius: 12px;
+  padding: 0rem 1.5rem;
+  margin-bottom: 1.5rem;
+`;
+
+export const CoverageHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #4169e1;
+`;
+
+export const CoverageTitle = styled.h3`
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-left: 0.75rem;
+  color: #333;
+`;
+
+export const CoverageContent = styled.p`
+  font-size: 1rem;
+  color: #555;
+  padding: 0rem 2rem;
+`;
+
+export const ConfirmButton = styled.button`
+  flex: 1;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 10px;
+  background: #4169e1;
+  margin-left: 1.5rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #3157d1;
+  }
+`;
+
+export const RegisterButton = styled.button`
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 5px;
+  background: #4169e1;
+  font-weight: bold;
+  font-size: 0.8rem;
+
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #3157d1;
   }
 `;

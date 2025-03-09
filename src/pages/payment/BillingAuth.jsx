@@ -1,6 +1,8 @@
 // BillingAuth.jsx
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useEffect, useState } from "react";
+import * as S from "./style";
+import PropTypes from "prop-types";
 
 // clientKey / customerKey는 기존과 동일
 const clientKey = "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
@@ -38,8 +40,12 @@ export function BillingAuth({ productId }) {
   }
 
   return (
-    <button onClick={handleCardRegistration}>
+    <S.RegisterButton onClick={handleCardRegistration}>
       카드 등록하기
-    </button>
+    </S.RegisterButton>
   );
 }
+
+BillingAuth.propTypes = {
+  productId: PropTypes.number.isRequired,
+};

@@ -153,7 +153,7 @@ export const ButtonContainer = styled.div`
 
 export const Button = styled.button`
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 10px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;

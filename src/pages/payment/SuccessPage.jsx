@@ -1,8 +1,10 @@
-// SuccessPage.jsx
+"use client";
+
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import * as S from "./style";
+import * as S from "./successStyle";
 import useUserProductStore from "../../store/useUserProductStore";
+import { CheckCircle, Home, FileText, ArrowRight } from "lucide-react";
 
 export function SuccessPage() {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ export function SuccessPage() {
     // URL 파라미터에서 productId, amount 가져온다고 가정
     const productId = searchParams.get("productId");
     const amountStr = searchParams.get("amount");
-    const paidAmount = amountStr ? parseInt(amountStr, 10) : 0;
+    const paidAmount = amountStr ? Number.parseInt(amountStr, 10) : 0;
 
     // 페이지에 들어오면 곧바로 POST
     async function postPurchase() {
@@ -39,29 +41,87 @@ export function SuccessPage() {
     postPurchase();
   }, [searchParams, purchaseProduct, navigate]);
 
+  const handleGoHome = () => {
+    navigate("/");
+  };
+
+  const handleViewMyInsurance = () => {
+    navigate("/mypage/insurance");
+  };
+
+  // 현재 날짜를 YYYY-MM-DD 형식으로 반환
+  const getCurrentDate = () => {
+    const now = new Date();
+    return now.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
-    <S.SuccessWrapper>
-      <S.SuccessBox>
-        <S.CheckIcon
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#0064ff"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <path d="M9 12l2 2 4-4" />
-        </S.CheckIcon>
+    <S.SuccessPageContainer>
+      <S.SuccessCard>
+        <S.SuccessIconWrapper>
+          <CheckCircle size={80} color="#4169e1" strokeWidth={1.5} />
+        </S.SuccessIconWrapper>
 
-        <h2>결제 완료</h2>
-        <p>결제가 완료되었습니다.</p>
+        <S.SuccessTitle>결제가 성공적으로 완료되었습니다!</S.SuccessTitle>
+        <S.SuccessMessage>
+          보험 가입이 정상적으로 처리되었습니다. 아래 정보를 확인해주세요.
+        </S.SuccessMessage>
 
-        <p>{`주문번호: ${searchParams.get("orderId")}`}</p>
-        <p>{`결제 금액: ${Number(searchParams.get("amount") || 0).toLocaleString()}원`}</p>
-      </S.SuccessBox>
-    </S.SuccessWrapper>
+        <S.PaymentInfoContainer>
+          <S.PaymentInfoItem>
+            <S.PaymentInfoLabel>주문번호</S.PaymentInfoLabel>
+            <S.PaymentInfoValueNumber>
+              {searchParams.get("orderId") || "-"}
+            </S.PaymentInfoValueNumber>
+          </S.PaymentInfoItem>
+
+          <S.PaymentInfoItem>
+            <S.PaymentInfoLabel>결제 금액</S.PaymentInfoLabel>
+            <S.PaymentInfoValue>
+              {Number(searchParams.get("amount") || 0).toLocaleString()}원
+            </S.PaymentInfoValue>
+          </S.PaymentInfoItem>
+
+          <S.PaymentInfoItem>
+            <S.PaymentInfoLabel>결제 일시</S.PaymentInfoLabel>
+            <S.PaymentInfoValue>{getCurrentDate()}</S.PaymentInfoValue>
+          </S.PaymentInfoItem>
+        </S.PaymentInfoContainer>
+
+        <S.NextStepsContainer>
+          <S.NextStepsTitle>다음 단계</S.NextStepsTitle>
+          <S.NextStepsList>
+            <S.NextStepsItem>
+              <FileText size={18} />
+              <span>마이페이지에서 가입 내역을 확인할 수 있습니다.</span>
+            </S.NextStepsItem>
+          </S.NextStepsList>
+        </S.NextStepsContainer>
+
+        <S.ButtonContainer>
+          <S.HomeButton onClick={handleGoHome}>
+            <Home size={18} />
+            홈으로 돌아가기
+          </S.HomeButton>
+
+          <S.ViewInsuranceButton onClick={handleViewMyInsurance}>
+            <FileText size={18} />
+            가입 내역 보기
+            <ArrowRight size={16} />
+          </S.ViewInsuranceButton>
+        </S.ButtonContainer>
+      </S.SuccessCard>
+
+      <S.ConfettiContainer>
+        {Array.from({ length: 50 }).map((_, index) => (
+          <S.Confetti key={index} delay={Math.random() * 5} />
+        ))}
+      </S.ConfettiContainer>
+    </S.SuccessPageContainer>
   );
 }
 

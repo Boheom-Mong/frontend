@@ -44,6 +44,8 @@ const useAutoPaymentStore = create((set) => ({
             return {
               ...item,
               productName: productData?.productName || "이름 없음",
+              companyName: productData?.companyName || "회사명 없음",
+              productCategory: productData?.productCategory || "카테고리 없음",
             };
           } catch (error) {
             console.error("상품 조회 실패:", error);
