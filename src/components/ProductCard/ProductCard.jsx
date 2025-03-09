@@ -1,8 +1,9 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import * as S from "./style";
+import { useBookmarkStore } from "../../store/useBookmarkStore";
 
 const baseUrl = import.meta.env.VITE_APP_S3_URL;
 
@@ -38,8 +39,30 @@ const ProductCard = ({ insurance }) => {
   const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  const handleToggleBookmark = () => {
+  const { toggleBookmark, fetchBookmarkState } = useBookmarkStore();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const state = await fetchBookmarkState(insurance.productId);
+        setIsBookmarked(state);
+      } catch (error) {
+        console.error("fetchBookmarkState error:", error);
+      }
+   })();
+  }, [insurance.productId, fetchBookmarkState]);
+
+  const handleToggleBookmark = async () => {
     setIsBookmarked((prev) => !prev);
+
+    try {
+      await toggleBookmark(insurance.productId);
+      // 정상적으로 완료 -> 상태 유지
+    } catch (err) {
+      console.error("toggleBookmark error:", err);
+      // 실패 시 UI 롤백할지 여부는 상황에 따라 결정
+      // setIsBookmarked(prev => !prev);
+    }
   };
 
   // 카테고리 Enum -> 한글 변환

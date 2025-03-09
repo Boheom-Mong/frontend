@@ -1,43 +1,39 @@
+// pages/mypage/Bookmark.jsx
 import React, { useEffect } from "react";
 import { useBookmarkStore } from "../../store/useBookmarkStore";
-
+import ProductCard from "../../components/ProductCard/ProductCard";
 
 function Bookmark() {
   const {
-    bookmarkList,   // 내 북마크 배열
+    bookmarkDetailList,
     loading,
     error,
-    fetchMyBookmarks,
+    fetchMyBookmarksWithDetail,
   } = useBookmarkStore();
 
   useEffect(() => {
-    fetchMyBookmarks(); // 컴포넌트 마운트 시점에 내 북마크 목록 가져오기
-  }, [fetchMyBookmarks]);
+    // 한 번에 '상세 정보 포함'한 목록을 불러온다
+    fetchMyBookmarksWithDetail();
+  }, [fetchMyBookmarksWithDetail]);
 
-  // 로딩 중
-  if (loading) return <div>북마크 목록 불러오는 중...</div>;
+  if (loading) return <div>로딩중...</div>;
+  if (error) return <div>에러: {error}</div>;
 
-  // 에러 발생
-  if (error) return <div>에러 발생: {error}</div>;
+  // 만약 bookmarkDetailList가 없다면
+  if (!bookmarkDetailList.length) {
+    return <p>아직 북마크가 없습니다.</p>;
+  }
 
-  // 결과 렌더링
+  // bookmarkDetailList는 [{ bookmarkId, productId, companyName, ...}, ...]
   return (
     <div>
       <h2>내 북마크 목록</h2>
-      {bookmarkList.length === 0 ? (
-        <p>아직 북마크가 없습니다.</p>
-      ) : (
-        <ul>
-          {bookmarkList.map((bm) => (
-            <li key={bm.bookmarkId}>
-              {/* 예시로 productId, createdAt 등 표시 */}
-              <p>상품 ID: {bm.productId}</p>
-              <p>북마크 생성일: {bm.createdAt}</p>
-              <hr />
-            </li>
-          ))}
-        </ul>
-      )}
+      {bookmarkDetailList.map((item) => (
+        <ProductCard 
+          key={item.bookmarkId}
+          insurance={item} // ProductCard는 { productId, companyName, ...}를 받음
+        />
+      ))}
     </div>
   );
 }
