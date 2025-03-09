@@ -1,10 +1,12 @@
+// BillingAuth.jsx
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useEffect, useState } from "react";
 
+// clientKey / customerKey는 기존과 동일
 const clientKey = "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
 const customerKey = "Z5bbouOlF5gUBtdDbmYF1";
 
-export function BillingAuth() {
+export function BillingAuth({ productId }) {
   const [paymentApi, setPaymentApi] = useState(null);
 
   useEffect(() => {
@@ -23,7 +25,8 @@ export function BillingAuth() {
       // 카드 등록 요청
       await paymentApi.requestBillingAuth({
         method: "CARD",
-        successUrl: window.location.origin + "/cardRegistration",
+        // 여기에 productId를 포함해 카드 등록 완료 후 돌아올 URL을 지정
+        successUrl: `${window.location.origin}/cardRegistration/${productId}`,
         failUrl: window.location.origin + "/failPage",
         customerEmail: "user@example.com",
         customerName: "홍길동",

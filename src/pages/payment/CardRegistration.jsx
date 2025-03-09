@@ -1,12 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function CardRegistration() {
 
   const navigate = useNavigate();
+  const { productId } = useParams();
 
   const handleGoToAutoPayment = () => {
-    navigate("/autoPaymentSetting");
+    navigate(`/autoPaymentSetting/${productId}`);
   };
   return (
     <div>

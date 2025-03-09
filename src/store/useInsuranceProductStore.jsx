@@ -108,6 +108,8 @@ const useInsuranceProductStore = create((set, get) => ({
       const response = await API.get(`/insurance-products/${id}`);
       const fetchedProduct = response.data.result;
 
+      console.log("백엔드로부터 받은 productId: ", fetchedProduct.productId);
+
       set((state) => ({
         insurances: [...state.insuranceProducts, fetchedProduct],
       }));
