@@ -4,7 +4,19 @@ import PropTypes from "prop-types";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import * as S from "./style";
 
-// 1) 백엔드 Enum 이름 -> 한글 문자열
+const baseUrl = import.meta.env.VITE_APP_S3_URL;
+
+const companyLogos = {
+  DB손해보험: `${baseUrl}/db.png`,
+  한화손해보험: `${baseUrl}/hanwha.png`,
+  흥국화재: `${baseUrl}/heongkuk.png`,
+  현대해상: `${baseUrl}/hyundai.jpeg`,
+  KB손해보험: `${baseUrl}/kb.png`,
+  롯데손해보험: `${baseUrl}/lotte.png`,
+  메리츠화재: `${baseUrl}/merits.png`,
+  삼성화재: `${baseUrl}/samsung.png`,
+};
+
 const categoryMap = {
   CANCER: "암",
   SURGERY: "수술/입원",
@@ -30,14 +42,23 @@ const ProductCard = ({ insurance }) => {
     setIsBookmarked((prev) => !prev);
   };
 
-  // 2) 실제 카테고리 표시를 위해: 백엔드 Enum값 -> 한글
+  // 카테고리 Enum -> 한글 변환
   const koreanCategory =
     categoryMap[insurance.productCategory] || insurance.productCategory;
+
+  // 회사 이름으로 로고 URL 매핑
+  const logoUrl = companyLogos[insurance.companyName];
 
   return (
     <S.InsuranceCard>
       <S.CardHeader>
-        <S.CompanyName>{insurance.companyName}</S.CompanyName>
+        <S.CompanyInfo>
+          {logoUrl && (
+            <S.CompanyLogo src={logoUrl} alt={insurance.companyName} />
+          )}
+          <S.CompanyName>{insurance.companyName}</S.CompanyName>
+        </S.CompanyInfo>
+
         <S.CategoryTagWrapper onClick={handleToggleBookmark}>
           <S.CategoryTag>{koreanCategory}</S.CategoryTag>
           {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
@@ -47,7 +68,9 @@ const ProductCard = ({ insurance }) => {
       <S.CardBody>
         <h3>{insurance.productName}</h3>
         <p>{insurance.coverageDetails}</p>
-        <S.MonthlyFee>월 {insurance.monthlyPremium.toLocaleString()}원</S.MonthlyFee>
+        <S.MonthlyFee>
+          월 {insurance.monthlyPremium.toLocaleString()}원
+        </S.MonthlyFee>
       </S.CardBody>
 
       <S.CardFooter>
