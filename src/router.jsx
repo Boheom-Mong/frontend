@@ -54,21 +54,18 @@ const router = createBrowserRouter([
       
       // 결제 실패 페이지 
       { path: "/failPage", element: <FailPage /> },
-
-      // 결제 페이지
-      { path: "/payment", element: <Payment /> },
       
       // 보험 추천 페이지
       { path: "/recommend", element: <Recommend /> },
   
       // 여기서 productId를 받아서 결제 진행
-      { path: "/payment/:productId", element: <Payment /> },
+      { path: "payment/:productId", element: <Payment /> },
       
       // 카드 등록 성공 후 이동할 페이지
-      { path: "/cardRegistration", element: <CardRegistration /> },
+      { path: "/cardRegistration/:productId", element: <CardRegistration /> },
       
       //자동 결제 페이지
-      { path: "/autoPaymentSetting", element: <AutoPaymentSetting /> },
+      { path: "/autoPaymentSetting/:productId", element: <AutoPaymentSetting /> },
       
       //자동 결제 페이지
       { path: "/autoPaymentInfo", element: <AutoPaymentInfo /> },

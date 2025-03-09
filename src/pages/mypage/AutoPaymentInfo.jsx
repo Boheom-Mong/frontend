@@ -1,73 +1,59 @@
+// AutoPaymentInfo.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import useAutoPaymentStore from "../../store/useAutoPaymentStore";
 
 function AutoPaymentInfo() {
-  const [autoPayments, setAutoPayments] = useState([]);
-  const [editingId, setEditingId] = useState(null); 
-  const [editDayOfMonth, setEditDayOfMonth] = useState("");
-  const [editTime, setEditTime] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [dayOfMonth, setDayOfMonth] = useState("");
+  const [time, setTime] = useState("");
 
+  // zustand에서 필요한 상태/함수만 가져오기
+  const {
+    autoPayments,         // 자동결제 목록 state
+    fetchAutoPayments,    // 목록 조회 함수
+    deleteAutoPayment,    // 삭제 함수
+    updateAutoPayment,    // 수정 함수
+  } = useAutoPaymentStore();
+
+  // 컴포넌트 마운트 시 목록 조회
   useEffect(() => {
     fetchAutoPayments();
-  }, []);
+  }, [fetchAutoPayments]);
 
-  // 자동결제 목록 가져오기
-  const fetchAutoPayments = () => {
-    axios
-      .get("http://localhost:8080/api/autoPayment")
-      .then((res) => {
-        setAutoPayments(res.data);
-      })
-      .catch((err) => {
-        console.error("자동결제 정보 조회 오류:", err);
-      });
+  // 삭제 버튼 클릭 시 실행
+  const handleDelete = async (id) => {
+    try {
+      await deleteAutoPayment(id);
+    } catch (error) {
+      console.error("삭제 실패:", error);
+    }
   };
 
-  // 수정 시작 (인라인 편집 모드로 전환)
-  const startEditing = (item) => {
+  // 수정 버튼 클릭 시 실행
+  const handleEditClick = (item) => {
     setEditingId(item.id);
-    setEditDayOfMonth(item.dayOfMonth);
-    setEditTime(item.time);
+    setDayOfMonth(item.dayOfMonth);
+    setTime(item.time);
+  };
+
+  // 수정 내용 서버에 업데이트
+  const handleUpdate = async (id) => {
+    try {
+      await updateAutoPayment(id, { dayOfMonth, time });
+      // 수정모드 해제
+      setEditingId(null);
+      setDayOfMonth("");
+      setTime("");
+    } catch (error) {
+      console.error("수정 실패:", error);
+    }
   };
 
   // 수정 취소
-  const cancelEditing = () => {
+  const handleCancelEdit = () => {
     setEditingId(null);
-    setEditDayOfMonth("");
-    setEditTime("");
-  };
-
-  // 수정된 내용 저장 (PUT 요청)
-  const saveEdit = (id) => {
-    axios
-      .put(`http://localhost:8080/api/autoPayment/${id}`, {
-        dayOfMonth: editDayOfMonth,
-        time: editTime,
-      })
-      .then((res) => {
-        console.log("자동 결제 일정 수정 완료:", res.data);
-        // 수정 모드 해제
-        setEditingId(null);
-        // 목록 다시 로딩
-        fetchAutoPayments();
-      })
-      .catch((err) => {
-        console.error("자동 결제 일정 수정 오류:", err);
-      });
-  };
-
-  // 삭제 (DELETE 요청)
-  const deleteItem = (id) => {
-    axios
-      .delete(`http://localhost:8080/api/autoPayment/${id}`)
-      .then(() => {
-        console.log("자동 결제 일정 삭제 완료");
-        // 목록 다시 로딩
-        fetchAutoPayments();
-      })
-      .catch((err) => {
-        console.error("자동 결제 일정 삭제 오류:", err);
-      });
+    setDayOfMonth("");
+    setTime("");
   };
 
   return (
@@ -76,33 +62,46 @@ function AutoPaymentInfo() {
       {autoPayments.length > 0 ? (
         autoPayments.map((item) => (
           <div key={item.id} style={{ marginBottom: "15px" }}>
-            {/* 수정 모드인지 확인 */}
             {editingId === item.id ? (
+              // 수정 모드
               <div>
-                <label>결제일: </label>
-                <input
-                  type="number"
-                  value={editDayOfMonth}
-                  onChange={(e) => setEditDayOfMonth(e.target.value)}
-                />
-                &nbsp;
-                <label>결제 시간: </label>
-                <input
-                  type="text"
-                  value={editTime}
-                  onChange={(e) => setEditTime(e.target.value)}
-                />
-                &nbsp;
-                <button onClick={() => saveEdit(item.id)}>저장</button>
-                <button onClick={cancelEditing}>취소</button>
+                <p>
+                  결제일:{" "}
+                  <input
+                    type="number"
+                    min="1"
+                    max="31"
+                    value={dayOfMonth}
+                    onChange={(e) => setDayOfMonth(e.target.value)}
+                    style={{ marginLeft: "8px" }}
+                  />
+                  일
+                </p>
+                <p>
+                  결제 시간:{" "}
+                  <input
+                    type="text"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    style={{ marginLeft: "8px" }}
+                  />
+                </p>
+                <button onClick={() => handleUpdate(item.id)}>저장</button>
+                <button onClick={handleCancelEdit} style={{ marginLeft: "8px" }}>
+                  취소
+                </button>
               </div>
             ) : (
-              <div>
+              // 일반 모드
+              <>
+                <p>결제 상품: {item.productName}</p>
                 <p>결제일: 매월 {item.dayOfMonth}일</p>
                 <p>결제 시간: {item.time}</p>
-                <button onClick={() => startEditing(item)}>수정</button>
-                <button onClick={() => deleteItem(item.id)}>삭제</button>
-              </div>
+                <button onClick={() => handleEditClick(item)}>수정</button>
+                <button onClick={() => handleDelete(item.id)} style={{ marginLeft: "8px" }}>
+                  삭제
+                </button>
+              </>
             )}
             <hr />
           </div>

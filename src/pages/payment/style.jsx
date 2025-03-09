@@ -70,3 +70,81 @@ export const PaymentButton = styled.button`
     cursor: not-allowed;
   }
 `;
+
+export const Header = styled.header`
+  position: relative;
+  background: linear-gradient(135deg, #4169e1 0%, #3157d1 100%);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: white;
+  box-shadow: 0 10px 30px rgba(65, 105, 225, 0.2);
+
+`;
+
+export const CompanyName = styled.div`
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+`;
+
+export const ProductName = styled.h1`
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+`;
+
+export const CategoryTag = styled.span`
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+`;
+
+export const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+`;
+
+export const Description = styled.p`
+  font-size: 1.25rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+`;
+
+export const MonthlyFee = styled.div`
+  span {
+    display: block;
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  strong {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #4169e1;
+    
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+`;

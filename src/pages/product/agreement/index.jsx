@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom"; // 수정: useParams 추가
 import * as S from "./style";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 const Agreement = () => {
   const navigate = useNavigate();
+
+  // 1) "/agreement/:id" → 여기서 id 파라미터를 받아옴
+  const { id } = useParams();
+
   const [agreements, setAgreements] = useState({
     all: false,
     collection1: false,
@@ -91,8 +95,8 @@ const Agreement = () => {
     const allRequired = requiredAgreements.every((item) => agreements[item]);
 
     if (allRequired) {
-      // 다음 단계로 이동
-      navigate("/payment"); // 결제 페이지로 이동 예시
+      // 2) productId == id 로 간주 → /payment/:id 경로로 이동
+      navigate(`/payment/${id}`);
     } else {
       alert("필수 동의 항목에 모두 동의해주세요.");
     }
@@ -137,10 +141,10 @@ const Agreement = () => {
             <S.SectionContent>
               <S.SectionSubtitle>수집·이용 목적</S.SectionSubtitle>
               <S.SectionText>
-                보험보험계약 상담, 재무설계서비스, 보험계약 인수여부
-                판단(건강진단 및 계약 적부조사 포함),
-                실손의료보험계약·기타손해보험계약 등 실제 발생하는 손해만을
-                보상하는 실손형보험의 중복가입 확인을 위한 보험 가입내역 조회
+                보험보험계약 상담, 재무설계서비스, 보험계약 인수여부 판단(건강진단
+                및 계약 적부조사 포함), 실손의료보험계약·기타손해보험계약 등 실제
+                발생하는 손해만을 보상하는 실손형보험의 중복가입 확인을 위한 보험
+                가입내역 조회
               </S.SectionText>
 
               <S.SectionSubtitle>보유 및 이용기간</S.SectionSubtitle>
@@ -169,8 +173,8 @@ const Agreement = () => {
               <S.AgreementItem>
                 <S.AgreementItemTitle>민감정보</S.AgreementItemTitle>
                 <S.SectionText>
-                  피보험자의 질병·상해에 관한 정보(진료기록, 상병명, 기왕증,
-                  흡연 여부 등), 교통법규 위반정보
+                  피보험자의 질병·상해에 관한 정보(진료기록, 상병명, 기왕증, 흡연
+                  여부 등), 교통법규 위반정보
                 </S.SectionText>
                 <S.CheckboxLabel>
                   <S.Checkbox
@@ -192,17 +196,16 @@ const Agreement = () => {
                   <br />
                   성명, 주소, 생년월일, 이메일, 네이버ID, 유·무선 전화번호,
                   국적, 직업, 운전여부, 국내거소신고번호, 주행거리정보,
-                  외국인체류자격·코드,
-                  전문보험계약자(보험설계사·보험대리점·보험중개사 등)의 정보,
-                  사업자등록증상의 정보, 법률 및 국제협약 등의 의무이행을 위한
-                  정보, CI, 통신사, 커넥티드카/안전운전 정보, 걸음 수 정보
+                  외국인체류자격·코드, 전문보험계약자(보험설계사·보험대리점·보험중개사
+                  등)의 정보, 사업자등록증상의 정보, 법률 및 국제협약 등의
+                  의무이행을 위한 정보, CI, 통신사, 커넥티드카/안전운전 정보,
+                  걸음 수 정보
                   <br />
                   <br />
                   <strong>신용거래정보</strong>
                   <br />
-                  보험계약정보(상품종류, 기간, 보험가입금액 등),
-                  보험금정보(보험금 지급사유, 지급금액, 사고정보 등), 계약 전
-                  알릴 의무사항(취미 등)
+                  보험계약정보(상품종류, 기간, 보험가입금액 등), 보험금정보(보험금
+                  지급사유, 지급금액, 사고정보 등), 계약 전 알릴 의무사항(취미 등)
                   <br />
                   <br />
                   <strong>신용능력정보</strong>
@@ -245,12 +248,11 @@ const Agreement = () => {
             <S.SectionContent>
               <S.SectionSubtitle>제공받는 자</S.SectionSubtitle>
               <S.SectionText>
-                국내재보험사, 종합신용정보집중기관, 보험요율산출기관,
-                생명·손해보험사, 공제사업자, 체신관서(우체국보험), 보험협회,
-                자동차 제조회사, 건강진단·계약적부조사, 보험모집 등 위탁을
-                받은자(업무수탁자 등), 국토교통부, 안전운전(UBI)특약
-                제휴업체(티맵모빌리티(주), (주)카카오모빌리티, (주)네이버,
-                (주)비바리퍼블리카)
+                국내재보험사, 종합신용정보집중기관, 보험요율산출기관, 생명·손해보험사, 공제사업자, 체신관서(우체국보험),
+                보험협회, 자동차 제조회사, 건강진단·계약적부조사, 보험모집 등
+                위탁을 받은자(업무수탁자 등), 국토교통부,
+                안전운전(UBI)특약 제휴업체(티맵모빌리티(주), (주)카카오모빌리티,
+                (주)네이버, (주)비바리퍼블리카)
               </S.SectionText>
 
               <S.SectionSubtitle>제공받는 자의 이용목적</S.SectionSubtitle>
@@ -274,9 +276,9 @@ const Agreement = () => {
               <S.SectionText>
                 동의일로부터 1년까지
                 <br />
-                외국 재보험사의 국내 지점이 보험계약 인수여부 판단 지원 등
-                업무를 위탁하기 위한 경우 별도의 동의 없이 외국 소재 본점에
-                귀하의 정보를 이전할 수 있습니다.
+                외국 재보험사의 국내 지점이 보험계약 인수여부 판단 지원 등 업무를
+                위탁하기 위한 경우 별도의 동의 없이 외국 소재 본점에 귀하의 정보를
+                이전할 수 있습니다.
               </S.SectionText>
 
               <S.SectionSubtitle>제공 항목</S.SectionSubtitle>
@@ -302,8 +304,8 @@ const Agreement = () => {
               <S.AgreementItem>
                 <S.AgreementItemTitle>민감정보</S.AgreementItemTitle>
                 <S.SectionText>
-                  피보험자의 질병·상해에 관한 정보(진료기록, 상병명, 기왕증,
-                  흡연 여부 등), 교통법규 위반정보
+                  피보험자의 질병·상해에 관한 정보(진료기록, 상병명, 기왕증, 흡연
+                  여부 등), 교통법규 위반정보
                 </S.SectionText>
                 <S.CheckboxLabel>
                   <S.Checkbox
@@ -332,9 +334,8 @@ const Agreement = () => {
                   <br />
                   <strong>신용거래정보</strong>
                   <br />
-                  보험계약정보(상품종류, 기간, 보험가입금액 등),
-                  보험금정보(보험금 지급사유, 지급금액, 사고정보 등), 계약 전
-                  알릴 의무사항(취미 등)
+                  보험계약정보(상품종류, 기간, 보험가입금액 등), 보험금정보(보험금
+                  지급사유, 지급금액, 사고정보 등), 계약 전 알릴 의무사항(취미 등)
                   <br />
                   <br />
                   <strong>신용능력정보</strong>
@@ -355,8 +356,8 @@ const Agreement = () => {
               </S.AgreementItem>
 
               <S.SectionText>
-                업무위탁을 목적으로 개인(신용)정보 처리하는 경우 별도의 동의
-                없이 업무 수탁자에게 귀하의 정보를 제공할 수 있습니다. (홈페이지
+                업무위탁을 목적으로 개인(신용)정보 처리하는 경우 별도의 동의 없이
+                업무 수탁자에게 귀하의 정보를 제공할 수 있습니다. (홈페이지
                 [www.idbins.com]에서 확인 가능)
               </S.SectionText>
             </S.SectionContent>
@@ -440,11 +441,11 @@ const Agreement = () => {
 
               <S.SectionSubtitle>조회 목적</S.SectionSubtitle>
               <S.SectionText>
-                종합신용정보집중기관·보험요율산출기관 ·국토교통부 :
-                보험계약상담, 보험계약 인수여부 결정을 위한 판단, 보험 가입한도
-                조회, 실손의료보험계약·기타손해보험계약 등 실제 발생하는 손해를
-                보상하는 실손형 보험의 중복가입 확인, 새로운 보험계약 체결 시
-                기존 보험계약과의 중요사항 비교설명
+                종합신용정보집중기관·보험요율산출기관 ·국토교통부 : 보험계약상담,
+                보험계약 인수여부 결정을 위한 판단, 보험 가입한도 조회,
+                실손의료보험계약·기타손해보험계약 등 실제 발생하는 손해를 보상하는
+                실손형 보험의 중복가입 확인, 새로운 보험계약 체결 시 기존
+                보험계약과의 중요사항 비교설명
                 <br />
                 생명·손해보험협회 : 전문보험계약자 확인
                 <br />
@@ -480,8 +481,8 @@ const Agreement = () => {
               <S.AgreementItem>
                 <S.AgreementItemTitle>민감정보</S.AgreementItemTitle>
                 <S.SectionText>
-                  피보험자의 질병·상해에 관한 정보(진료기록, 상병명, 기왕증,
-                  흡연 여부 등), 교통법규 위반정보
+                  피보험자의 질병·상해에 관한 정보(진료기록, 상병명, 기왕증, 흡연
+                  여부 등), 교통법규 위반정보
                 </S.SectionText>
                 <S.CheckboxLabel>
                   <S.Checkbox
@@ -509,9 +510,9 @@ const Agreement = () => {
                   <br />
                   <strong>신용거래정보</strong>
                   <br />
-                  보험계약정보(상품종류, 기간, 보험가입금액 등),
-                  보험금정보(보험금 지급사유, 지급금액, 사고정보 등), 계약 전
-                  알릴 의무사항(취미 등), 보험료
+                  보험계약정보(상품종류, 기간, 보험가입금액 등), 보험금정보(보험금
+                  지급사유, 지급금액, 사고정보 등), 계약 전 알릴 의무사항(취미 등),
+                  보험료
                   <br />
                   <br />
                   <strong>신용능력정보</strong>
@@ -521,8 +522,8 @@ const Agreement = () => {
                   <br />
                   <strong>공공정보</strong>
                   <br />
-                  군운전경력정보, 실명확인증표 정보, 보험가입물건
-                  정보(피보험자차량 정보 등)
+                  군운전경력정보, 실명확인증표 정보, 보험가입물건 정보(피보험자차량
+                  정보 등)
                 </S.SectionText>
                 <S.CheckboxLabel>
                   <S.Checkbox
@@ -543,9 +544,7 @@ const Agreement = () => {
 
       <S.ButtonContainer>
         <S.CancelButton onClick={() => navigate(-1)}>취소</S.CancelButton>
-        <S.SubmitButton onClick={handleSubmit}>
-          동의하고 계속하기
-        </S.SubmitButton>
+        <S.SubmitButton onClick={handleSubmit}>동의하고 계속하기</S.SubmitButton>
       </S.ButtonContainer>
     </S.AgreementContainer>
   );
