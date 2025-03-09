@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import * as S from "./style";
 import { useAuthStore } from "../../store/useAuthStore";
 import useInsuranceProductStore from "../../store/useInsuranceProductStore";
+import { FileText, DollarSign } from "lucide-react";
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "tf5VUpqFDTAk-MVoQ9Ahj";
@@ -203,22 +204,32 @@ export function Payment() {
         <S.CategoryTag>{insurance.productCategory || "카테고리"}</S.CategoryTag>
       </S.Header>
 
-      <S.Content>
-        <div style={{ marginBottom: "1rem" }}>
-          <strong>월 보험료: </strong>
-          {insurance.monthlyPremium?.toLocaleString()}원
-        </div>
-        <div style={{ marginBottom: "1rem" }}>
-          <strong>보장 내용: </strong>
-          {insurance.coverageDetails}
-        </div>
+      <S.ContentSection>
+        <S.CoverageCard>
+          <S.CoverageHeader>
+            <DollarSign size={20} />
+            <S.CoverageTitle>월 보험료</S.CoverageTitle>
+          </S.CoverageHeader>
+          <S.CoverageContent>
+            {insurance.monthlyPremium?.toLocaleString()}원
+          </S.CoverageContent>
+        </S.CoverageCard>
+        <S.CoverageCard>
+          <S.CoverageHeader>
+            <FileText size={20} />
+            <S.CoverageTitle>보장 내용</S.CoverageTitle>
+          </S.CoverageHeader>
+          <S.CoverageContent>{insurance.coverageDetails}</S.CoverageContent>
+        </S.CoverageCard>
+      </S.ContentSection>
 
+      <S.Content>
         {/* 토스 위젯 영역 */}
         <div id="agreement" />
         <div id="payment-method" />
       </S.Content>
 
-      <button onClick={handlePaymentClick}>결제하기</button>
+      <S.ConfirmButton onClick={handlePaymentClick}>결제하기</S.ConfirmButton>
     </S.Wrapper>
   );
 }
