@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import API from "."; // axios 인스턴스(또는 fetch 대체)
 
-const useUserProductStore = create((set, get) => ({
+const useUserProductStore = create((set) => ({
   userProducts: [],
   loading: false,
   error: null,

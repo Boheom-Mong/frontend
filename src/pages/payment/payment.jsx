@@ -9,25 +9,24 @@ const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "tf5VUpqFDTAk-MVoQ9Ahj";
 
 export function Payment() {
-  // 여기서 { productId } 를 구조 분해
+  // URL 파라미터로부터 productId를 받아 숫자로 변환
   const { productId } = useParams();
-  const numericProductId = Number(productId); // 문자열 → 숫자 변환
+  const numericProductId = Number(productId);
 
-  const [ready, setReady] = useState(false);
+  // 토스 결제 위젯
   const [widgets, setWidgets] = useState(null);
 
-  // 상품 정보를 로컬로 관리
+  // 상품 정보
   const [insurance, setInsurance] = useState(null);
 
+  // 결제 금액(기본값 50,000원)
   const [amount, setAmount] = useState({
     currency: "KRW",
-    value: 50000, // 기본값
+    value: 50000,
   });
 
-  // Store에서 fetch 함수 가져오기
+  // 다른 Store에서 가져온 함수/상태
   const { fetchInsuranceById, loading, error } = useInsuranceProductStore();
-
-  // 사용자
   const { isLoggedIn, user, fetchUserInfo } = useAuthStore();
 
   /**
@@ -50,7 +49,10 @@ export function Payment() {
 
     console.log("[Payment] widgets ready. Setting amount:", amount);
     (async () => {
+      // 설정된 금액으로 위젯 초기화
       await widgets.setAmount(amount);
+
+      // 결제수단 / 약관 동의 등 렌더링
       await Promise.all([
         widgets.renderPaymentMethods({
           selector: "#payment-method",
@@ -61,7 +63,7 @@ export function Payment() {
           variantKey: "AGREEMENT",
         }),
       ]);
-      setReady(true);
+
       console.log("[Payment] widgets rendered successfully");
     })();
   }, [widgets, amount]);
@@ -70,13 +72,15 @@ export function Payment() {
    * 3) 상품 단건 조회
    */
   useEffect(() => {
-    // numericProductId가 0이거나 NaN이면 유효하지 않으므로
     if (!numericProductId) {
       console.warn("[Payment] No valid productId found in URL params");
       return;
     }
 
-    console.log("[Payment] Starting product fetch. productId:", numericProductId);
+    console.log(
+      "[Payment] Starting product fetch. productId:",
+      numericProductId
+    );
 
     (async () => {
       try {
@@ -86,16 +90,15 @@ export function Payment() {
         if (!fetchedProduct) {
           console.warn("[Payment] fetchedProduct is null/undefined");
         } else {
-          // 콘솔에 백엔드가 준 productId도 찍어볼 수 있음
           console.log(
             "[Payment] Fetched productId from server:",
             fetchedProduct.productId
           );
 
-          // 로컬 state에 저장
+          // 상품 정보를 상태에 저장
           setInsurance(fetchedProduct);
 
-          // 결제금액도 상품 데이터로 설정
+          // 상품의 월 보험료로 결제금액 업데이트
           setAmount((prev) => ({
             ...prev,
             value: fetchedProduct.monthlyPremium || 50000,
@@ -112,7 +115,9 @@ export function Payment() {
    */
   useEffect(() => {
     if (isLoggedIn && !user) {
-      console.log("[Payment] Logged in but user info not loaded. Fetching user info...");
+      console.log(
+        "[Payment] Logged in but user info not loaded. Fetching user info..."
+      );
       fetchUserInfo();
     }
   }, [isLoggedIn, user, fetchUserInfo]);
@@ -136,14 +141,17 @@ export function Payment() {
   }
 
   /**
-   * 5) 결제 버튼
+   * 5) 결제 버튼 로직
    */
   const handlePaymentClick = async () => {
     console.log("[handlePaymentClick] Called. insurance=", insurance);
 
-    // insurance가 null이면 “상품 정보를 찾을 수 없습니다” 표시
+    // insurance가 비어 있으면 취소
     if (!insurance) {
-      console.warn("[handlePaymentClick] insurance is null/undefined. productId=", numericProductId);
+      console.warn(
+        "[handlePaymentClick] insurance is null/undefined. productId=",
+        numericProductId
+      );
       return;
     }
 
@@ -153,15 +161,19 @@ export function Payment() {
     }
 
     try {
+      // 주문번호 (임시로 Base64 인코딩)
       const randomId = btoa(`${Date.now()}-${Math.random()}`);
-  
+
+      // 결제 요청
       await widgets.requestPayment({
         orderId: randomId,
         orderName: insurance.productName || `상품ID: ${numericProductId}`,
         successUrl:
           window.location.origin +
           "/successPage" +
-          `?productId=${numericProductId}&amount=${insurance.monthlyPremium ?? 0}&orderId=${randomId}`,
+          `?productId=${numericProductId}&amount=${
+            insurance.monthlyPremium ?? 0
+          }&orderId=${randomId}`,
         failUrl: window.location.origin + "/failPage",
         customerEmail: user?.loginEmail || "",
         customerName: user?.name || "",
@@ -173,14 +185,14 @@ export function Payment() {
     }
   };
 
-  // insurance가 null이면 “상품 정보를 찾을 수 없습니다.” UI
+  // insurance가 없으면 “상품 정보를 찾을 수 없습니다.” 메시지
   if (!insurance) {
     console.warn("[Payment] insurance is null. Returning fallback UI...");
     return <div>상품 정보를 찾을 수 없습니다.</div>;
   }
 
   /**
-   * 정상 렌더링
+   * 정상 렌더링 (결제 UI 표시)
    */
   return (
     <S.Wrapper>
@@ -190,7 +202,6 @@ export function Payment() {
         <S.ProductName>{insurance.productName}</S.ProductName>
         <S.CategoryTag>{insurance.productCategory || "카테고리"}</S.CategoryTag>
       </S.Header>
-
 
       <S.Content>
         <div style={{ marginBottom: "1rem" }}>
@@ -207,11 +218,7 @@ export function Payment() {
         <div id="payment-method" />
       </S.Content>
 
-      
-
-      <button disabled={!ready} onClick={handlePaymentClick}>
-        결제하기
-      </button>
+      <button onClick={handlePaymentClick}>결제하기</button>
     </S.Wrapper>
   );
 }
