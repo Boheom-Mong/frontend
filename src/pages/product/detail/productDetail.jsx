@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import * as S from "./style"; // 스타일
+import * as S from "./style";
 import { Shield, DollarSign, FileText, Phone } from "lucide-react";
 import useInsuranceProductStore from "../../../store/useInsuranceProductStore";
 import insuranceDetailsData from "../../../data/insuranceDetailsData";
@@ -13,12 +13,12 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
 
   const { fetchInsuranceById } = useInsuranceProductStore();
-  console.log(productId);
 
   const handleConsult = () => {
     window.open("http://pf.kakao.com/_pwxlnn", "_blank");
   };
 
+  // 카테고리 매핑 배열
   const insuranceCategories = [
     { value: "CANCER", label: "암보험" },
     { value: "SURGERY", label: "수술/입원" },
@@ -36,23 +36,11 @@ const ProductDetail = () => {
     { value: "ETC", label: "기타보험" },
   ];
 
-  // insurance.productCategory에 맞는 label 찾기
-  const matchedCategory = insuranceCategories.find(
-    (cat) => cat.value === insurance.productCategory
-  );
-
-  // matchedCategory가 있으면 label, 없으면 디폴트
-  const categoryLabel = matchedCategory
-    ? matchedCategory.label
-    : insurance.productCategory || "카테고리";
-
-
   useEffect(() => {
     (async () => {
       try {
         const fetchedInsurance = await fetchInsuranceById(productId);
         setInsurance(fetchedInsurance);
-        console.log(productId);
       } catch (error) {
         console.error("보험 상품을 불러오는 중 에러:", error);
       } finally {
@@ -93,17 +81,25 @@ const ProductDetail = () => {
     );
   }
 
+  // 여기부터는 insurance가 null이 아님.
+  // 이제 productCategory를 안전하게 사용할 수 있습니다.
+  const matchedCategory = insuranceCategories.find(
+    (cat) => cat.value === insurance.productCategory
+  );
+  const categoryLabel = matchedCategory
+    ? matchedCategory.label
+    : insurance.productCategory || "카테고리";
+
   // 가입 신청 예시
   const handleApply = () => {
     navigate(`/product/${id}/enrollment`);
   };
 
-  // 1) 카테고리에 맞춰 data 중 랜덤 하나 고르기
+  // 동일 카테고리의 랜덤 상세 정보
   const { productCategory } = insurance;
   const sameCategoryList = insuranceDetailsData.filter(
     (item) => item.category === productCategory
   );
-
   let randomDetail = null;
   if (sameCategoryList.length > 0) {
     const randIndex = Math.floor(Math.random() * sameCategoryList.length);
@@ -133,9 +129,8 @@ const ProductDetail = () => {
           {randomDetail && (
             <S.DetailSection>
               <S.SectionTitle>상품 상세 정보</S.SectionTitle>
-
               <S.InfoBlockContainer>
-                {/* 보장 내용 블록 */}
+                {/* 보장 내용 */}
                 <S.InfoBlock>
                   <S.InfoBlockTitle>
                     <Shield
@@ -144,24 +139,21 @@ const ProductDetail = () => {
                     />
                     보장 내용
                   </S.InfoBlockTitle>
-
                   <S.InfoBlockText>
                     <strong>보장금액</strong>
                     <span>{randomDetail.coverage.guaranteeAmount}</span>
                   </S.InfoBlockText>
-
                   <S.InfoBlockText>
                     <strong>제외사항</strong>
                     <span>{randomDetail.coverage.exclusions}</span>
                   </S.InfoBlockText>
-
                   <S.InfoBlockText>
                     <strong>특약</strong>
                     <span>{randomDetail.coverage.specialClauses}</span>
                   </S.InfoBlockText>
                 </S.InfoBlock>
 
-                {/* 보험료 정보 블록 */}
+                {/* 보험료 정보 */}
                 <S.InfoBlock>
                   <S.InfoBlockTitle>
                     <DollarSign
@@ -170,29 +162,25 @@ const ProductDetail = () => {
                     />
                     보험료 정보
                   </S.InfoBlockTitle>
-
                   <S.InfoBlockText>
                     <strong>예시</strong>
                     <span>{randomDetail.premiumDetails.planExamples}</span>
                   </S.InfoBlockText>
-
                   <S.InfoBlockText>
                     <strong>납입주기</strong>
                     <span>{randomDetail.premiumDetails.paymentCycle}</span>
                   </S.InfoBlockText>
-
                   <S.InfoBlockText>
                     <strong>면제조건</strong>
                     <span>{randomDetail.premiumDetails.waiverCondition}</span>
                   </S.InfoBlockText>
-
                   <S.InfoBlockText>
                     <strong>환급형태</strong>
                     <span>{randomDetail.premiumDetails.refundType}</span>
                   </S.InfoBlockText>
                 </S.InfoBlock>
 
-                {/* 가입 안내 블록 */}
+                {/* 가입 안내 */}
                 <S.InfoBlock>
                   <S.InfoBlockTitle>
                     <FileText
@@ -201,7 +189,6 @@ const ProductDetail = () => {
                     />
                     가입 안내
                   </S.InfoBlockTitle>
-
                   <S.InfoBlockText>
                     <strong>온라인 가입</strong>
                     <span>
@@ -210,19 +197,16 @@ const ProductDetail = () => {
                         : "불가"}
                     </span>
                   </S.InfoBlockText>
-
                   <S.InfoBlockText>
                     <strong>콜센터</strong>
                     <span>{randomDetail.applicationProcess.callCenter}</span>
                   </S.InfoBlockText>
-
                   <S.InfoBlockText>
                     <strong>대면 상담</strong>
                     <span>
                       {randomDetail.applicationProcess.faceToFaceConsult}
                     </span>
                   </S.InfoBlockText>
-
                   <S.InfoBlockText>
                     <strong>필요 서류</strong>
                     <span>
@@ -232,7 +216,6 @@ const ProductDetail = () => {
                 </S.InfoBlock>
               </S.InfoBlockContainer>
 
-              {/* 추가 정보 박스 */}
               <S.ExtraBox>
                 <S.FeatureList>
                   <li>보험료 납입 면제 혜택이 있을 수 있습니다.</li>
