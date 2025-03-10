@@ -65,8 +65,9 @@ export const useBookmarkStore = create((set, get) => ({
       // "POST /api/bookmarks/products/{productId}/toggle"
       await API.post(`/bookmarks/products/${productId}/toggle`);
       // 토글 후 북마크 목록 다시 불러오기
-      await get().fetchMyBookmarksWithDetail();
-      set({ loading: false });
+      window.location.reload();
+      //await get().fetchMyBookmarksWithDetail();
+      //set({ loading: false });
     } catch (err) {
       set({ error: err.message, loading: false });
       console.error("toggleBookmark error:", err);

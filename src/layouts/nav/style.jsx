@@ -76,19 +76,44 @@ export const UserInfo = styled.div`
   color: #333;
 `;
 
+// 알림 아이콘 주변 컨테이너
 export const NotificationIcon = styled.div`
-  display: flex;
+  position: relative;  /* 자식들의 위치 기준이 됨 */
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-right: 0.5rem;
-
+  
+  /* 알림 아이콘 색 */
   svg {
     color: #333;
     transition: color 0.2s;
   }
-
   &:hover svg {
     color: #007aff;
   }
+`;
+
+export const Badge = styled.span`
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 50%;
+`;
+
+export const NotificationDot = styled.span`
+  position: absolute;
+  /* 벨 아이콘의 오른쪽 상단 모서리에 살짝 겹치게 조정 */
+  top: -2px;
+  right: -2px;
+  width: 6px;
+  height: 6px;
+  background-color: red;
+  border-radius: 50%;
+  pointer-events: none;
 `;
