@@ -16,8 +16,36 @@ const ProductDetail = () => {
   console.log(productId);
 
   const handleConsult = () => {
-    window.open("http://pf.kakao.com/_pwxlnn/chat", "_blank");
+    window.open("http://pf.kakao.com/_pwxlnn", "_blank");
   };
+
+  const insuranceCategories = [
+    { value: "CANCER", label: "암보험" },
+    { value: "SURGERY", label: "수술/입원" },
+    { value: "LIFE", label: "종신보험" },
+    { value: "DRIVER", label: "운전자/상해" },
+    { value: "FIRE", label: "주택화재" },
+    { value: "DENTAL", label: "치아" },
+    { value: "DEMENTIA", label: "치매" },
+    { value: "NEWBORN", label: "신생아" },
+    { value: "HEALTHCARE", label: "실손의료" },
+    { value: "CHILD", label: "어린이보험" },
+    { value: "PET", label: "반려동물보험" },
+    { value: "NURSING", label: "간병보험" },
+    { value: "TRAVEL", label: "여행자보험" },
+    { value: "ETC", label: "기타보험" },
+  ];
+
+  // insurance.productCategory에 맞는 label 찾기
+  const matchedCategory = insuranceCategories.find(
+    (cat) => cat.value === insurance.productCategory
+  );
+
+  // matchedCategory가 있으면 label, 없으면 디폴트
+  const categoryLabel = matchedCategory
+    ? matchedCategory.label
+    : insurance.productCategory || "카테고리";
+
 
   useEffect(() => {
     (async () => {
@@ -87,7 +115,7 @@ const ProductDetail = () => {
       <S.Header>
         <S.CompanyName>{insurance.companyName}</S.CompanyName>
         <S.ProductName>{insurance.productName}</S.ProductName>
-        <S.CategoryTag>{insurance.productCategory || "카테고리"}</S.CategoryTag>
+        <S.CategoryTag>{categoryLabel}</S.CategoryTag>
       </S.Header>
 
       <S.Content>
