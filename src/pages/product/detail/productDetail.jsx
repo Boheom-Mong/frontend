@@ -15,6 +15,10 @@ const ProductDetail = () => {
   const { fetchInsuranceById } = useInsuranceProductStore();
   console.log(productId);
 
+  const handleConsult = () => {
+    window.open("http://pf.kakao.com/_pwxlnn/chat", "_blank");
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -219,7 +223,7 @@ const ProductDetail = () => {
           <Shield size={20} />
           가입 신청하기
         </S.ApplyButton>
-        <S.ConsultButton>
+        <S.ConsultButton onClick={handleConsult}>
           <Phone size={20} />
           상담 신청하기
         </S.ConsultButton>
