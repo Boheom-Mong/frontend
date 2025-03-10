@@ -5,6 +5,7 @@ import { useAuthStore } from "./useAuthStore";
 // ↑ 만약 토큰을 직접 꺼내고 싶다면, 또는 useAuthStore에서 가져와도 됨
 
 const SSE_URL = "https://boheommong.site/api/notifications/subscribe"; 
+// const SSE_URL = "http://localhost:8080/api/notifications/subscribe";
 // 백엔드 SSE 구독 endpoint (혹은 full URL)
 
 export const useNotificationStore = create((set, get) => ({
