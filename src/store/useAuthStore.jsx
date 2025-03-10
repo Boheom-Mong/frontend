@@ -25,6 +25,11 @@ export const useAuthStore = create((set) => ({
       console.error("API 요청 중 오류 발생:", error);
     }
   },
+
+  getToken: () => {
+    return localStorage.getItem("access_token") || "";
+  },
+  
 }));
 
 export const useUpdateUserStore = create((set) => ({
