@@ -102,7 +102,11 @@ const ProductCard = ({ insurance }) => {
         >
           자세히 보기
         </S.DetailButton>
-        <S.ApplyButton>신청하기</S.ApplyButton>
+        <S.ApplyButton
+          onClick={() => navigate(`/product/${insurance.productId}`)}
+        >
+          신청하기
+        </S.ApplyButton>
       </S.CardFooter>
     </S.InsuranceCard>
   );
